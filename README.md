@@ -1,4 +1,4 @@
-<h1 align="center" id="title">Flexiyo</h1>
+<h1 align="center" id="title">Flexiyo VITE (experimental)</h1>
 
 <p id="description">Welcome to Flexiyo - Your All-in-One Social Media Experience, Crafted with Passion by Kaushal Krishna</p>
 
