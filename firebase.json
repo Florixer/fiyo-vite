@@ -1,0 +1,17 @@
+{
+  "hosting": {
+    "public": "build",
+    "site": "flexiyo",
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ],
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  }
+}

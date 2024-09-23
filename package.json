@@ -1,0 +1,84 @@
+{
+  "name": "Flexiyo",
+  "version": "0.1.0",
+  "private": false,
+  "dependencies": {
+    "-": "^0.0.1",
+    "@capacitor-community/media": "^5.4.1",
+    "@capacitor-community/speech-recognition": "^5.1.0",
+    "@capacitor/android": "^5.7.4",
+    "@capacitor/app": "^5.0.7",
+    "@capacitor/core": "^5.7.4",
+    "@capacitor/filesystem": "^5.2.1",
+    "@capacitor/network": "^5.0.7",
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
+    "@microlink/react-json-view": "^1.23.0",
+    "@mui/material": "^5.15.15",
+    "@mui/x-date-pickers": "^7.2.0",
+    "@resolve_ch/file-viewer": "^0.0.8",
+    "@vitejs/plugin-react": "^4.3.1",
+    "@vitejs/plugin-react-refresh": "^1.3.6",
+    "axios": "^1.6.5",
+    "browser-video-thumbnail-generator": "^2.0.1",
+    "capacitor": "^0.5.6",
+    "file64": "^1.0.3",
+    "firebase-tools": "^13.8.1",
+    "formik": "^2.4.5",
+    "js-cookie": "^3.0.5",
+    "matchmedia": "^0.1.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-grid-gallery": "^1.0.1",
+    "react-headroom": "^3.2.1",
+    "react-lazy-load-image-component": "^1.6.0",
+    "react-modal": "^3.16.1",
+    "react-modal-sheet": "^2.2.0",
+    "react-router-dom": "^6.21.1",
+    "react-speech-recognition": "^3.10.0",
+    "socket.io-client": "^4.7.5",
+    "typewriter-effect": "^2.21.0",
+    "vite": "^5.4.7",
+    "vite-plugin-env-compatible": "^2.0.1",
+    "vite-plugin-svgr": "^4.2.0",
+    "yup": "^1.4.0"
+  },
+  "scripts": {
+    "format": "npx prettier . --write",
+    "deploy": "vite build && firebase deploy --only hosting:flexiyo && npx cap sync android && date",
+    "push": "git add . && git commit-date && git push origin master",
+    "start": "vite",
+    "dev": "vite preview",
+    "build": "vite build",
+    "serve": "vite preview",
+    "firebase_build": "CI=false vite build",
+    "android": "vite build && npx cap sync && npx cap run android",
+    "resources": "npx capacitor-resources &&  npx cordova-res android --skip-config --copy",
+    "ionic:build": "npm run build",
+    "ionic:serve": "npm run start"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^5.7.4",
+    "@capacitor/core": "^5.7.5",
+    "autoprefixer": "^10.4.17",
+    "postcss": "^8.4.35"
+  }
+}

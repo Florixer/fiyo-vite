@@ -1,0 +1,7 @@
+{
+  "name": "Flexiyo",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "custom"
+}
