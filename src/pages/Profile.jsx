@@ -84,7 +84,7 @@ export default function Profile() {
           </div>
           <div className="user-block">
             <div className="user-details">
-              <span className="user-details--name">{userInfo.username}</span>
+              <span className="user-details--name">{userInfo.full_name}</span>
               <span className="user-details--username">@{userInfo.username}</span>
               <span className="user-details--about">
                 {userInfo.bio}
