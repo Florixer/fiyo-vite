@@ -11,9 +11,9 @@ import TrackDeck from "@/components/music/TrackDeck";
 import MusicContext from "@/context/music/MusicContext";
 import useMusicUtility from "@/utils/music/useMusicUtility";
 import spotifyLogo from "@/assets/media/img/logo/spotifyLogo.svg";
-// import WebSpeechRecognition, {
-//   useSpeechRecognition,
-// } from "react-speech-recognition";
+import WebSpeechRecognition, {
+  useSpeechRecognition,
+} from "react-speech-recognition";
 Modal.setAppElement("#root");
 const Music = () => {
   const {
@@ -288,7 +288,7 @@ const Music = () => {
     setIsDownloadModalOpen(false);
   };
 
-  /* const openSpeechModal = () => {
+   const openSpeechModal = () => {
     setIsSpeechModalOpen(true);
     startSpeechRecognition();
     handleAudioPause();
@@ -369,7 +369,7 @@ const Music = () => {
         stopSpeechRecognition();
       }, 1000);
     }
-  }; */
+  };
 
   const customModalStyles = {
     content: {
