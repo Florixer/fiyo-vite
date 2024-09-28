@@ -14,7 +14,7 @@ const generateUsername = () => {
 };
 
 export const UserProvider = ({ children }) => {
-  const [isUserAuthenticated, setIsUserAuthenticated] = useState(false);
+  const [isUserAuthenticated, setIsUserAuthenticated] = useState(true);
   const [userInfo, setUserInfo] = useState({
     id: "dcb5951d-bceb-40ab-be6c-cf689b833ab2",
     full_name: "Demo Person",
