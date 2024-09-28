@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 import Sheet from "react-modal-sheet";
 import { LazyLoadImage } from "react-lazy-load-image-component";

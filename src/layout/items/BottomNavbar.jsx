@@ -60,7 +60,7 @@ export default function BottomNavbar() {
             to="/create"
           >
             <svg
-              class="new-post-icon"
+              className="new-post-icon"
               height="1.7rem"
               role="img"
               viewBox="0 0 24 24"

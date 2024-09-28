@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useState, useRef } from "react";
+import { createContext, useEffect, useState, useRef } from "react";
 import { Capacitor } from "@capacitor/core";
 import { Network as CapacitorNetwork } from "@capacitor/network";
 

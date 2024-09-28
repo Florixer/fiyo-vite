@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { Alert, Container, Typography, TextField, Button } from "@mui/material";
 import TypewriterComponent from "typewriter-effect";
@@ -59,7 +59,7 @@ const Login = () => {
     setIsLoginUserAccountReqLoading(true);
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_FMAPI_BASEURL}/users/login_account`,
+        `${process.env.REACT_APP_FMAPI_BASEURL}/users/login_account`,
         {
           emailOrUsername: values.emailOrUsername,
           password: values.password,

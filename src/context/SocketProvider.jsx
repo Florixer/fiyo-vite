@@ -66,15 +66,6 @@ export const SocketProvider = ({ children }) => {
         initialized.current = true;
       }
     }
-
-    return () => {
-      console.log("Cleaning up socket connection");
-      if (socketRef.current) {
-        socketRef.current.disconnect();
-        socketRef.current = null;
-        initialized.current = false;
-      }
-    };
   }, [isUserAuthenticated, userInfo, socketUser.joinedRoomIds]);
 
   return (

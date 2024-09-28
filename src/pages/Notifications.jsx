@@ -121,9 +121,9 @@ const Notifications = () => {
   ];
 
   const renderNotifications = () => {
-    return notificationsList.map((notification) => {
+    return notificationsList.map((notification, index) => {
       return (
-        <div className="notification">
+        <div className="notification" key={index}>
           <div className="notification-cover">
             <img src={notification.cover} />
           </div>
@@ -136,10 +136,11 @@ const Notifications = () => {
             </div>
             <div className="notification-body--actions">
               {notification.actions
-                ? notification.actions.map((action) => {
+                ? notification.actions.map((action, index) => {
                     return (
                       <button
                         type="button"
+                        key={index}
                         className="notification-body--actions-btn"
                         style={{
                           color:
@@ -161,18 +162,18 @@ const Notifications = () => {
   };
   return (
     <section id="notifications">
-      {isMobile ? <Headroom>
-        <CustomTopNavbar
-          navbarPrevPage={"/"}
-          navbarTitle="Notifications"
-          navbarFirstIcon="fa fa-plus"
-          navbarSecondIcon="fa fa-bell"
-          setBorder
-        />
-      </Headroom> : null}
-      <div className="notifications-list">
-        {renderNotifications()}
-        </div>
+      {isMobile ? (
+        <Headroom>
+          <CustomTopNavbar
+            navbarPrevPage={"/"}
+            navbarTitle="Notifications"
+            navbarFirstIcon="fa fa-plus"
+            navbarSecondIcon="fa fa-bell"
+            setBorder
+          />
+        </Headroom>
+      ) : null}
+      <div className="notifications-list">{renderNotifications()}</div>
     </section>
   );
 };

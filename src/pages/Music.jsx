@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useCallback } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Menu, MenuItem } from "@mui/material";
 import axios from "axios";
 import Modal from "react-modal";
@@ -33,6 +33,7 @@ const Music = () => {
     ? `${currentTrack.name} - Flexiyo Music`
     : "Flexiyo Music";
   const location = useLocation();
+  const navigate = useNavigate();
 
   const { getTrack, getTrackData, deleteCachedAudioData, handleAudioPause } =
     useMusicUtility();
@@ -48,7 +49,7 @@ const Music = () => {
   const [isDownlodModalOpen, setIsDownloadModalOpen] = useState(false);
   const [isSpeechModalOpen, setIsSpeechModalOpen] = useState(false);
   const [downloadProgress, setDownloadProgress] = useState(0);
-  const [isShareMenuOpen, setIsShareMenuOpen] = useState(null);
+  const [isShareMenuOpen, setIsShareMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = React.useState(false);
 
   React.useEffect(() => {
@@ -130,7 +131,7 @@ const Music = () => {
       console.error("Error fetching top tracks:", error);
       setApiLoading(false);
     }
-  }, [saavnApiBaseUrl, setTopTracks]);
+  }, [saavnApiBaseUrl]);
 
   const downloadTrack = async (trackId) => {
     try {
@@ -250,7 +251,7 @@ const Music = () => {
     };
 
     fetchData();
-  }, [location.search]);
+  }, []);
 
   const handleSearchChange = (e) => {
     const value = e.target.value;
@@ -288,7 +289,7 @@ const Music = () => {
     setIsDownloadModalOpen(false);
   };
 
-   const openSpeechModal = () => {
+  const openSpeechModal = () => {
     setIsSpeechModalOpen(true);
     startSpeechRecognition();
     handleAudioPause();
@@ -409,7 +410,6 @@ const Music = () => {
     return tracks.map((track, index) => (
       <TrackItem
         key={index}
-        index={index}
         track={track}
         onGetTrack={getTrack}
         onOpenDownloadModal={(trackId) => openDownloadModal(trackId)}
@@ -434,7 +434,7 @@ const Music = () => {
           </Headroom>
         ) : null}
         <div className="search-container">
-          <form id="searchTracksForm" className="search-box">
+          <div className="search-box">
             <div
               className="search-bar"
               style={{
@@ -475,7 +475,7 @@ const Music = () => {
                 height: "2.7rem",
               }}
             >
-              {/* <i
+              <i
                 className="fm-primary-btn fa fa-microphone"
                 style={{
                   display: "flex",
@@ -484,7 +484,7 @@ const Music = () => {
                   height: "100%",
                 }}
                 onClick={openSpeechModal}
-              ></i> */}
+              ></i>
               <button
                 className="fm-primary-btn"
                 style={{
@@ -506,7 +506,7 @@ const Music = () => {
                 ></i>
               </button>
             </div>
-          </form>
+          </div>
         </div>
         <div
           className={`print-error alert alert-danger ${
@@ -568,7 +568,7 @@ const Music = () => {
             Download
           </button>
         </Modal>
-        {/* <Modal
+        <Modal
           isOpen={isSpeechModalOpen}
           onRequestClose={closeSpeechModal}
           contentLabel="Speech Recognition Modal"
@@ -576,7 +576,7 @@ const Music = () => {
         >
           <div className="speechWave">
             <div
-              class="speechWaveBoxContainer"
+              className="speechWaveBoxContainer"
               style={{
                 outline:
                   !speechTranscript && !speechListening
@@ -627,7 +627,7 @@ const Music = () => {
               </button>
             ) : null}
           </div>
-        </Modal> */}
+        </Modal>
       </div>
       {!isMobile ? (
         currentTrack.id ? (
@@ -747,13 +747,13 @@ const Music = () => {
               className="track-deck--modal-menu"
               anchorEl={isShareMenuOpen}
               open={isShareMenuOpen}
-              onClose={() => setIsShareMenuOpen(null)}
+              onClose={() => setIsShareMenuOpen(false)}
             >
               <MenuItem
                 onClick={() => {
-                  setIsShareMenuOpen(null);
+                  setIsShareMenuOpen(false);
                   navigator.clipboard.writeText(
-                    `https://flexiyo.web.app/music?track=${currentTrack.id}&play=true`,
+                    `https://flexiyo.web.app/music?track=${currentTrack.id}`,
                   );
                 }}
               >

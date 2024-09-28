@@ -1,8 +1,7 @@
-import React, { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext } from "react";
 import matchMedia from "matchmedia";
 import BottomNavbar from "./items/BottomNavbar";
 import SideNavbar from "./items/SideNavbar";
-import HomeNavbar from "./items/HomeNavbar";
 import UserContext from "@/context/user/UserContext";
 
 const Navbar = () => {

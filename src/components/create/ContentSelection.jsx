@@ -3,7 +3,6 @@ import { Capacitor } from "@capacitor/core";
 import { Filesystem } from "@capacitor/filesystem";
 import { Gallery } from "react-grid-gallery";
 import { VideoThumbnailGenerator } from "browser-video-thumbnail-generator";
-import ReactJson from "@microlink/react-json-view";
 import CreateContext from "@/context/create/CreateContext";
 import {
   fetchAlbums,
@@ -35,7 +34,7 @@ const ContentSelection = () => {
         ) : Capacitor.isNativePlatform() && selectedFileType === "video" ? (
           <VideosGrid mediaVideos={mediaFiles.videos} />
         ) : Capacitor.isNativePlatform() && selectedFileType === "audio" ? (
-          <ReactJson src={mediaFiles.audios} theme={"shapeshifter"} />
+          function () {}
         ) : null}
       </div>
     </div>

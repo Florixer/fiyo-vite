@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 
 const FileViewer = ({ fileType, filePath, fileThumbnail }) => {

@@ -1,8 +1,8 @@
-import React,{ useState, useContext } from "react";
+import { useState, useContext } from "react";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import MusicContext from "@/context/music/MusicContext";
 import useMusicUtility from "@/utils/music/useMusicUtility";
-const TrackItem = ({ index, track, onOpenDownloadModal }) => {
+const TrackItem = ({ id, track, index, onOpenDownloadModal }) => {
   const { contentQuality } = useContext(MusicContext);
   const { getTrack } = useMusicUtility();
   const [isDownloadLoading, setIsDownloadLoading] = useState(false);
@@ -23,7 +23,7 @@ const TrackItem = ({ index, track, onOpenDownloadModal }) => {
     <div
       className="track-item"
       onClick={handleItemClick}
-      id={`track-${index}`}
+      id={`trackItem${index}`}
     >
       <div className="track-item-box">
         <div className="track-item--cover">

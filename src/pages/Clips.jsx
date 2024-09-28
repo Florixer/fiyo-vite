@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import ClipItem from "@/components/clips/ClipItem";
 import clip1 from "@/assets/media/vid/clip.mp4";
 import clip2 from "@/assets/media/vid/clip2.mp4";
@@ -178,9 +178,9 @@ const Clips = () => {
   const renderClips = () => {
     return clipsObject.clips.items.map((clip, index) => (
       <ClipItem
-        isMuted={isClipMuted}
+        key={index}
         clip={clip}
-        index={index}
+        isMuted={isClipMuted}
         toggleClipMuted={handleClipMuted}
       />
     ));

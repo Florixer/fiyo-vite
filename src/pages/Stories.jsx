@@ -74,8 +74,8 @@ const Stories = () => {
   ];
 
   const renderStories = () => {
-    return storiesList.map((story) => (
-      <div className="stories-list--story" key={story.id}>
+    return storiesList.map((story, index) => (
+      <div className="stories-list--story" key={index}>
         <div
           className="stories-list--story-backthumb"
           style={{ backgroundImage: `url(${story.backThumb})` }}
@@ -104,19 +104,19 @@ const Stories = () => {
         </Headroom>
       ) : null}
       <div className="stories-list">{renderStories()}</div>
-      <div class="story-templates">
-        <div class="story-templates--item story-templates--scratch">
+      <div className="story-templates">
+        <div className="story-templates--item story-templates--scratch">
           <i className="fa fa-plus story-templates--scratch-icon"></i>
           <span className="story-templates--scratch-text">Create a Story from Scratch</span>
         </div>
-        <div class="story-templates--item">STORY SAMPLE</div>
-        <div class="story-templates--item">STORY SAMPLE</div>
-        <div class="story-templates--item">STORY SAMPLE</div>
-        <div class="story-templates--item">STORY SAMPLE</div>
-        <div class="story-templates--item">STORY SAMPLE</div>
-        <div class="story-templates--item">STORY SAMPLE</div>
-        <div class="story-templates--item">STORY SAMPLE</div>
-        <div class="story-templates--item">STORY SAMPLE</div>
+        <div className="story-templates--item">STORY SAMPLE</div>
+        <div className="story-templates--item">STORY SAMPLE</div>
+        <div className="story-templates--item">STORY SAMPLE</div>
+        <div className="story-templates--item">STORY SAMPLE</div>
+        <div className="story-templates--item">STORY SAMPLE</div>
+        <div className="story-templates--item">STORY SAMPLE</div>
+        <div className="story-templates--item">STORY SAMPLE</div>
+        <div className="story-templates--item">STORY SAMPLE</div>
       </div>
     </section>
   );

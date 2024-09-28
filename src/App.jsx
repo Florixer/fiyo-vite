@@ -1,29 +1,29 @@
-import "@/App.css";
+import "./App.css";
 import React, { useState, useEffect } from "react";
 import { App as CapacitorApp } from "@capacitor/app";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import ProtectedRoute from "@/utils/ProtectedRoute";
+import ProtectedRoute from "./utils/ProtectedRoute";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import AuthSignup from "@/pages/auth/Signup";
-import NotFound404 from "@/pages/NotFound404";
-import Navbar from "@/layout/Navbar";
-import Home from "@/pages/Home";
-import Search from "@/pages/Search";
-import Create from "@/pages/Create";
-import Clips from "@/pages/Clips";
-import Profile from "@/pages/Profile";
-import Music from "@/pages/Music";
-import TrackPlayer from "@/components/music/TrackPlayer";
-import DirectInbox from "@/pages/direct/Inbox";
-import DirectChat from "@/pages/direct/Chat";
-import DirectChatNotification from "@/components/direct/chat/ChatNotification";
-import Stories from "@/pages/Stories";
-import Notifications from "@/pages/Notifications";
-import { MusicProvider } from "@/context/music/MusicContext";
-import { CreateProvider } from "@/context/create/CreateContext";
-import UserContext, { UserProvider } from "@/context/user/UserContext";
-import { SocketProvider } from "@/context/SocketProvider";
-import LoadingScreen from "@/components/app/LoadingScreen";
+import AuthSignup from "./pages/auth/Signup";
+import NotFound404 from "./pages/NotFound404";
+import Navbar from "./layout/Navbar";
+import Home from "./pages/Home";
+import Search from "./pages/Search";
+import Create from "./pages/Create";
+import Clips from "./pages/Clips";
+import Profile from "./pages/Profile";
+import Music from "./pages/Music";
+import TrackPlayer from "./components/music/TrackPlayer";
+import DirectInbox from "./pages/direct/Inbox";
+import DirectChat from "./pages/direct/Chat";
+import DirectChatNotification from "./components/direct/chat/ChatNotification";
+import Stories from "./pages/Stories";
+import Notifications from "./pages/Notifications";
+import { MusicProvider } from "./context/music/MusicContext";
+import { CreateProvider } from "./context/create/CreateContext";
+import UserContext, { UserProvider } from "./context/user/UserContext";
+import { SocketProvider } from "./context/SocketProvider";
+import LoadingScreen from "./components/app/LoadingScreen";
 
 const App = () => {
   document.title = "Flexiyo";
@@ -89,7 +89,7 @@ const App = () => {
                           path="/"
                           element={
                             <ProtectedRoute>
-                              <Home />sss
+                              <Home />
                             </ProtectedRoute>
                           }
                         />

@@ -33,25 +33,25 @@ const InboxList = () => {
           last_msg: "1 new message",
         },
         {
-          id: 2963293620915325, // Ensure this ID is unique
+          id: 2963293620915324,
           title: "json.fiyo",
           cover: demoPersonPfp,
           last_msg: "1 new message",
         },
         {
-          id: 2963293620915326, // Unique ID
+          id: 2963293620915324,
           title: "json.fiyo",
           cover: demoPersonPfp,
           last_msg: "1 new message",
         },
         {
-          id: 2963293620915327, // Unique ID
+          id: 2963293620915324,
           title: "json.fiyo",
           cover: demoPersonPfp,
           last_msg: "1 new message",
         },
         {
-          id: 2963293620915328, // Unique ID
+          id: 2963293620915324,
           title: "json.fiyo",
           cover: demoPersonPfp,
           last_msg: "1 new message",
@@ -61,9 +61,9 @@ const InboxList = () => {
   };
 
   const renderInbox = () => {
-    return inboxItems.inbox.items.map((chat) => (
-      <Link key={chat.id} to={`/direct/t/${chat.id}`}>
-        <div className="inbox-item">
+    return inboxItems.inbox.items.map((chat, index) => (
+      <Link to={`/direct/t/${chat.id}`} key={index}>
+        <div className="inbox-item" id={chat.id}>
           <img
             alt="chat-cover"
             className="inbox-item--cover"

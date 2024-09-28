@@ -1,5 +1,4 @@
-import React, { useContext, useEffect, useCallback } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useContext, useEffect, useCallback } from "react";
 import axios from "axios";
 import MusicContext from "@/context/music/MusicContext";
 
@@ -13,9 +12,6 @@ const useMusicUtility = () => {
     contentQuality,
     setIsAudioPlaying,
   } = useContext(MusicContext);
-
-  const location = useLocation();
-  const navigate = useNavigate();
 
   const saavnApiBaseUrl = "https://fiyo-saavn.vercel.app/api";
 
@@ -60,10 +56,6 @@ const useMusicUtility = () => {
       localStorage.getItem("cachedTracks") || "{}",
     );
 
-    const params = new URLSearchParams(window.location.search);
-    params.set("track", trackId);
-    navigate(`${location.pathname}?${params.toString()}`, { replace: true });
-
     if (cachedTracks[trackId]) {
       const cachedTrackData = cachedTracks[trackId];
       setCurrentTrack({
@@ -90,8 +82,10 @@ const useMusicUtility = () => {
       const { data } = await axios.get(
         `${saavnApiBaseUrl}/songs/${currentTrack.id}/lyrics`,
       );
-      currentTrackLyrics = data.data.lyrics.replace("<br>", "<br/>");
-      return currentTrackLyrics;
+      return {
+        trackId: currentTrack.id,
+        lyrics: data.data.lyrics.replace("<br>", "<br/>"),
+      };
     } else {
       try {
         const { data } = await axios.get(
@@ -99,13 +93,14 @@ const useMusicUtility = () => {
             currentTrack.name
           }/${currentTrack.artists.split(",")[0].trim()}`,
         );
-        currentTrackLyrics = data.lyrics;
-        if (currentTrackLyrics) {
-          return currentTrackLyrics;
-        } else {
-          return null;
-        }
+        if (data.lyrics) {
+          return {
+            trackId: currentTrack.id,
+            lyrics: data.lyrics,
+          };
+        } else return null;
       } catch (error) {
+        console.error(error.message);
         return null;
       }
     }
