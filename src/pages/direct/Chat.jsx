@@ -39,12 +39,13 @@ const Chat = () => {
 
   useEffect(() => {
     if (!socket) return;
-    const handleReceiveMessage = (username, message) => {
+    const handleReceiveMessage = (avatar, username, message) => {
       setMessages((prevMessages) => [
         ...prevMessages,
         {
-          text: message,
+          avatar: avatar,
           sender: username,
+          text: message,
         },
       ]);
       scrollToBottom();
@@ -71,15 +72,15 @@ const Chat = () => {
       setMessages([
         ...messages,
         {
-          text: inputText,
-          sender: userInfo.username,
           avatar: userInfo.avatar,
+          sender: userInfo.username,
+          text: inputText,
         },
       ]);
       socket.emit(
         "send-message",
         roomId,
-        socket.id,
+        userInfo.avatar,
         userInfo.username,
         inputText,
       );
@@ -148,7 +149,7 @@ const Chat = () => {
             >
               {message.sender !== userInfo.username ? (
                 <LazyLoadImage
-                  src={demoPersonPfp}
+                  src={message.avatar}
                   className="chat-message--other-pfp"
                   alt="user-pfp"
                 />
