@@ -11,7 +11,7 @@ const ChatNotification = () => {
     if (!socket) return;
 
     const handleReceiveMessage = (avatar, username, message) => {
-      if (userInfo?.username === username) return;
+      if (userInfo.username === username) return;
       setNotification({ cover: avatar, title: username, content: message });
       setTimeout(() => {
         setNotification(null);
@@ -23,7 +23,7 @@ const ChatNotification = () => {
     return () => {
       socket.off("receive-message", handleReceiveMessage);
     };
-  }, [socket, userInfo?.username]);
+  }, [socket, userInfo.username]);
 
   return (
     <div className={`chat-notification ${notification ? "active" : ""}`}>

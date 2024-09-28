@@ -18,6 +18,8 @@ const Login = () => {
   const [isLoginUserAccountReqLoading, setIsLoginUserAccountReqLoading] =
     useState(false);
 
+  const fiyoapiBaseUrl = "https://fiyoapi.vercel.app/api";
+
   const LoginSchema = Yup.object().shape({
     emailOrUsername: Yup.string().required("Email or Username is required"),
     password: Yup.string().required("Password is required"),
@@ -59,7 +61,7 @@ const Login = () => {
     setIsLoginUserAccountReqLoading(true);
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_FMAPI_BASEURL}/users/login_account`,
+        `${fiyoapiBaseUrl}/users/login_account`,
         {
           emailOrUsername: values.emailOrUsername,
           password: values.password,
@@ -77,7 +79,6 @@ const Login = () => {
 
   const handleForgotPasswordClick = () => {
     setIsForgotPasswordClicked(true);
-    // Add logic to handle forgot password functionality
   };
 
   return (

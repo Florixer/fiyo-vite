@@ -150,7 +150,7 @@ const Signup = () => {
     setIsCreateUserAccountReqLoading(true);
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_FMAPI_BASEURL}/users/create_account`,
+        `${process.env.VITE_FMAPI_BASEURL}/users/create_account`,
         {
           ...firstFormik.values,
           ...secondFormik.values,
