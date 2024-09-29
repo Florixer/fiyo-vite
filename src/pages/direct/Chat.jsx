@@ -7,7 +7,7 @@ import InboxList from "@/components/direct/InboxList";
 import UserFilesSheet from "@/components/direct/chat/UserFilesSheet";
 import UserContext from "@/context/user/UserContext";
 import demoPersonPfp from "@/assets/media/img/demo-person.jpg";
-import { useSocket } from "@/context/SocketProvider";
+import { useSocket } from "@/context/socket/SocketContext";
 
 const Chat = () => {
   document.title = "@jason.fiyo - Chat • Flexiyo";

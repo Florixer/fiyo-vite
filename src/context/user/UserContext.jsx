@@ -13,6 +13,7 @@ const generateUsername = () => {
   return username;
 };
 
+// Provide UserContext
 export const UserProvider = ({ children }) => {
   const [isUserAuthenticated, setIsUserAuthenticated] = useState(true);
   const [userInfo, setUserInfo] = useState({
