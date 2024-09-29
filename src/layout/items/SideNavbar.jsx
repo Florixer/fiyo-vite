@@ -10,7 +10,7 @@ export default function SideNavbar() {
     <>
       <div id="left-side-navbar">
         <div className="side-navbar-top">
-          <NavLink to="/" setactiveclassname="true">
+          <NavLink>
             <div className="logo">
               <img src={logoImg} alt="Logo" />
             </div>
@@ -18,8 +18,9 @@ export default function SideNavbar() {
         </div>
         <div className="side-navbar-main">
           <NavLink
-            className="side-nav-icon home-icon-link"
-            setactiveclassname="true"
+            className={({ isActive }) =>
+              `side-nav-icon home-icon-link ${isActive ? "active" : ""}`
+            }
             to="/"
           >
             <svg
@@ -35,8 +36,9 @@ export default function SideNavbar() {
             </svg>
           </NavLink>
           <NavLink
-            className="side-nav-icon search-icon-link"
-            setactiveclassname="true"
+            className={({ isActive }) =>
+              `side-nav-icon search-icon-link ${isActive ? "active" : ""}`
+            }
             to="/search"
           >
             <svg
@@ -57,8 +59,9 @@ export default function SideNavbar() {
             </svg>
           </NavLink>
           <NavLink
-            className="side-nav-icon new-post-icon-link"
-            setactiveclassname="true"
+            className={({ isActive }) =>
+              `side-nav-icon new-post-icon-link ${isActive ? "active" : ""}`
+            }
             to="/create"
           >
             <svg
@@ -88,8 +91,9 @@ export default function SideNavbar() {
           </NavLink>
           <NavLink
             to="/clips"
-            className="side-nav-icon clips-icon-link"
-            setactiveclassname="true"
+            className={({ isActive }) =>
+              `side-nav-icon clips-icon-link ${isActive ? "active" : ""}`
+            }
           >
             <svg
               className="clips-icon"
@@ -111,8 +115,9 @@ export default function SideNavbar() {
           </NavLink>
           <NavLink
             to="/stories"
-            className="side-nav-icon stories-icon-link"
-            setactiveclassname="true"
+            className={({ isActive }) =>
+              `side-nav-icon stories-icon-link ${isActive ? "active" : ""}`
+            }
           >
             <svg
               className="stories-icon"
@@ -137,8 +142,9 @@ export default function SideNavbar() {
           </NavLink>
           <NavLink
             to="/music"
-            className="side-nav-icon music-icon-link"
-            setactiveclassname="true"
+            className={({ isActive }) =>
+              `side-nav-icon music-icon-link ${isActive ? "active" : ""}`
+            }
           >
             <svg
               className="music-icon"
@@ -202,8 +208,11 @@ export default function SideNavbar() {
           </NavLink>
           <NavLink
             to="/notifications"
-            className="side-nav-icon notifications-icon-link"
-            setactiveclassname="true"
+            className={({ isActive }) =>
+              `side-nav-icon notifications-icon-link ${
+                isActive ? "active" : ""
+              }`
+            }
           >
             <svg
               className="notifications-icon"
@@ -230,8 +239,9 @@ export default function SideNavbar() {
           </NavLink>
           <NavLink
             to="/direct/inbox"
-            className="side-nav-icon chat-icon-link"
-            setactiveclassname="true"
+            className={({ isActive }) =>
+              `side-nav-icon chat-icon-link ${isActive ? "active" : ""}`
+            }
           >
             <svg
               className="chat-icon"
@@ -252,8 +262,9 @@ export default function SideNavbar() {
             </svg>
           </NavLink>
           <NavLink
-            className="side-nav-icon user-profile-icon-link"
-            setactiveclassname="true"
+            className={({ isActive }) =>
+              `side-nav-icon user-profile-icon-link ${isActive ? "active" : ""}`
+            }
             to="/profile"
           >
             <div className="user-profile-icon">

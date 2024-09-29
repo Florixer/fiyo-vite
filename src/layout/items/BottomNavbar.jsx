@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import UserContext from "@/context/user/UserContext";
-import { NavLink, useLocation } from "react-router-dom";;
+import { NavLink, useLocation } from "react-router-dom";
 
 export default function BottomNavbar() {
   const { userInfo } = useContext(UserContext);
@@ -15,7 +15,12 @@ export default function BottomNavbar() {
     <>
       <nav id="mobile-bottom-navbar">
         <i className="bottom-nav-icon">
-          <NavLink className="home-icon-link" setactiveclassname="true" to="/">
+          <NavLink
+            className={({ isActive }) =>
+              `home-icon-link ${isActive ? "active" : ""}`
+            }
+            to="/"
+          >
             <svg
               className="home-icon"
               height="1.7rem"
@@ -31,8 +36,9 @@ export default function BottomNavbar() {
         </i>
         <i className="bottom-nav-icon">
           <NavLink
-            className="search-icon-link"
-            setactiveclassname="true"
+            className={({ isActive }) =>
+              `search-icon-link ${isActive ? "active" : ""}`
+            }
             to="/search"
           >
             <svg
@@ -55,8 +61,9 @@ export default function BottomNavbar() {
         </i>
         <i className="bottom-nav-icon">
           <NavLink
-            className="new-post-icon-link"
-            setactiveclassname="true"
+            className={({ isActive }) =>
+              `new-post-icon-link ${isActive ? "active" : ""}`
+            }
             to="/create"
           >
             <svg
@@ -87,8 +94,9 @@ export default function BottomNavbar() {
         </i>
         <i className="bottom-nav-icon">
           <NavLink
-            className="clips-icon-link"
-            setactiveclassname="true"
+            className={({ isActive }) =>
+              `clips-icon-link ${isActive ? "active" : ""}`
+            }
             to="/clips"
           >
             <svg
@@ -115,8 +123,9 @@ export default function BottomNavbar() {
         </i>
         <i className="bottom-nav-icon">
           <NavLink
-            className="user-profile-icon-link"
-            setactiveclassname="true"
+            className={({ isActive }) =>
+              `user-profile-icon-link ${isActive ? "active" : ""}`
+            }
             to="/profile"
           >
             <div className="user-profile-icon">

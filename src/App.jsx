@@ -4,21 +4,25 @@ import { App as CapacitorApp } from "@capacitor/app";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ProtectedRoute from "./utils/ProtectedRoute";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import AuthSignup from "./pages/auth/Signup";
-import NotFound404 from "./pages/NotFound404";
+
+import {
+  Home,
+  Search,
+  Create,
+  Clips,
+  Profile,
+  Music,
+  DirectInbox,
+  DirectChat,
+  Stories,
+  Notifications,
+  AuthSignup,
+  NotFound404,
+} from "./pages";
+
 import Navbar from "./layout/Navbar";
-import Home from "./pages/Home";
-import Search from "./pages/Search";
-import Create from "./pages/Create";
-import Clips from "./pages/Clips";
-import Profile from "./pages/Profile";
-import Music from "./pages/Music";
 import TrackPlayer from "./components/music/TrackPlayer";
-import DirectInbox from "./pages/direct/Inbox";
-import DirectChat from "./pages/direct/Chat";
 import DirectChatNotification from "./components/direct/chat/ChatNotification";
-import Stories from "./pages/Stories";
-import Notifications from "./pages/Notifications";
 import { MusicProvider } from "./context/music/MusicContext";
 import { CreateProvider } from "./context/create/CreateContext";
 import UserContext, { UserProvider } from "./context/user/UserContext";
@@ -81,23 +85,36 @@ const App = () => {
                         <Route
                           exact
                           path="/auth/signup"
+                          lazy={true}
                           element={<AuthSignup />}
                         />
                         <Route
                           index
                           exact
                           path="/"
+                          lazy={true}
                           element={
                             <ProtectedRoute>
                               <Home />
                             </ProtectedRoute>
                           }
                         />
-                        <Route exact path="/search" element={<Search />} />
-                        <Route exact path="/music" element={<Music />} />
+                        <Route
+                          exact
+                          path="/search"
+                          lazy={true}
+                          element={<Search />}
+                        />
+                        <Route
+                          exact
+                          path="/music"
+                          lazy={true}
+                          element={<Music />}
+                        />
                         <Route
                           exact
                           path="/stories"
+                          lazy={true}
                           element={
                             <ProtectedRoute>
                               <Stories />
@@ -107,6 +124,7 @@ const App = () => {
                         <Route
                           exact
                           path="/notifications"
+                          lazy={true}
                           element={
                             <ProtectedRoute>
                               <Notifications />
@@ -116,6 +134,7 @@ const App = () => {
                         <Route
                           exact
                           path="/direct/inbox"
+                          lazy={true}
                           element={
                             <ProtectedRoute>
                               <DirectInbox />
@@ -125,6 +144,7 @@ const App = () => {
                         <Route
                           exact
                           path="direct/t/:currentRoomId"
+                          lazy={true}
                           element={
                             <ProtectedRoute>
                               <DirectChat />
@@ -134,6 +154,7 @@ const App = () => {
                         <Route
                           exact
                           path="/create"
+                          lazy={true}
                           element={
                             <ProtectedRoute>
                               <Create />
@@ -143,6 +164,7 @@ const App = () => {
                         <Route
                           exact
                           path="/clips"
+                          lazy={true}
                           element={
                             <ProtectedRoute>
                               <Clips />
@@ -151,6 +173,7 @@ const App = () => {
                         />
                         <Route
                           path="/profile"
+                          lazy={true}
                           element={
                             <ProtectedRoute>
                               <Profile />
