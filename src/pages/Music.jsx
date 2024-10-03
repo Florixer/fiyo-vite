@@ -188,6 +188,7 @@ const Music = () => {
           if (trackData) {
             const { link, ...rest } = trackData;
             setCurrentTrack(rest);
+            setIsTrackDeckModalOpen(true)
             if (playParam === "true") {
               setIsTrackDeckModalOpen(true);
             }
