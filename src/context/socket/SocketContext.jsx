@@ -5,7 +5,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { createSocket } from "@/hooks/user/socketService";
+import { createSocket } from "@/hooks/user/useSocketService";
 import UserContext from "@/context/user/UserContext";
 
 const SOCKET_URL =
