@@ -410,6 +410,7 @@ const Music = () => {
     return tracks.map((track, index) => (
       <TrackItem
         key={index}
+        index={index}
         track={track}
         onGetTrack={getTrack}
         onOpenDownloadModal={(trackId) => openDownloadModal(trackId)}
