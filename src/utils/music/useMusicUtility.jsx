@@ -13,7 +13,7 @@ const useMusicUtility = () => {
     setIsAudioPlaying,
   } = useContext(MusicContext);
 
-  const saavnApiBaseUrl = "https://fiyo-saavn.vercel.app/api";
+  const saavnApiBaseUrl = "https://saavn.dev/api";
 
   const getTrackData = async (trackId) => {
     try {
