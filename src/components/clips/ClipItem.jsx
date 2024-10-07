@@ -243,10 +243,6 @@ const ClipItem = ({ clip, isClipMuted, setIsClipMuted }) => {
       className="clip-container"
       style={{ position: "relative" }}
       onClick={handleClipClick}
-      onMouseDown={(e) => handlePress(e, "start")}
-      onMouseUp={() => handlePress(null, "end")}
-      onTouchStart={(e) => handlePress(e, "start")}
-      onTouchEnd={() => handlePress(null, "end")}
     >
       <video
         ref={clipRef}
