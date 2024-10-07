@@ -19,9 +19,14 @@ function CommentsSheet({
       detent="content-height"
       isOpen={isCommentsSheetOpen}
       onClose={() => setIsCommentsSheetOpen(false)}
+      snapPoints={[1, 0.7]}
+      initialSnap={1}
     >
       <Sheet.Container className="clip-comments--sheet-container">
         <Sheet.Header />
+        <p className="text-xs text-center border-b border-gray-600 pb-3">
+          Comments
+        </p>
         <Sheet.Content className="clip-comments--sheet-content">
           {renderClipComments()}
         </Sheet.Content>

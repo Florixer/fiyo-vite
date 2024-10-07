@@ -1395,7 +1395,7 @@ b {
   justify-content: space-between;
   align-items: center;
   flex-direction: column;
-  height: 45%;
+  height: 50%;
 }
 
 .clip-engagement span {
@@ -1465,7 +1465,7 @@ b {
 
 .clip-comments--sheet-container {
   background-color: var(--fm-secondary-bg-color) !important;
-  height: 70%;
+  height: 100%;
 }
 
 .clip-comments--sheet-content {
