@@ -5,47 +5,15 @@ const ClipItem = ({ clip, isClipMuted, setIsClipMuted }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
-  const [isLongPress, setIsLongPress] = useState(false);
   const [isMuteChange, setIsMuteChange] = useState(true);
   const [isLiked, setIsLiked] = useState(false);
+  const [showAnimatedHeart, setShowAnimatedHeart] = useState(false);
   const [isCommentsSheetOpen, setIsCommentsSheetOpen] = useState(false);
 
   const clipRef = useRef(null);
   const progressBarRef = useRef(null);
-  const clickTimeoutRef = useRef(null);
   const clickCountRef = useRef(0);
-
-  const pressTimerRef = useRef(null);
-
-  const handleLongPress = useCallback(() => {
-    const clip = clipRef.current;
-    clip.pause();
-    setIsPlaying(false);
-    setIsLongPress(true);
-  }, []);
-
-  const startPressTimer = (event) => {
-    if (
-      !event.target.closest(
-        ".clip-details--creator, .clip-details--metadata, .clip-engagement, .clip-controls--progressbar",
-      )
-    ) {
-      pressTimerRef.current = setTimeout(handleLongPress, 300);
-      setIsLongPress(false);
-    }
-  };
-
-  const clearPressTimer = () => {
-    if (pressTimerRef.current) {
-      clearTimeout(pressTimerRef.current);
-      pressTimerRef.current = null;
-    }
-    if (!isLongPress) {
-      const clip = clipRef.current;
-      clip.play();
-      setIsPlaying(true);
-    }
-  };
+  const clickTimeoutRef = useRef(0);
 
   useEffect(() => {
     const clip = clipRef.current;
@@ -96,6 +64,10 @@ const ClipItem = ({ clip, isClipMuted, setIsClipMuted }) => {
       clickTimeoutRef.current = setTimeout(() => {
         if (clickCountRef.current === 2) {
           setIsLiked(true);
+          setShowAnimatedHeart(true);
+          setTimeout(() => {
+            setShowAnimatedHeart(false);
+          }, 800);
         } else if (clickCountRef.current === 1) {
           if (!isCommentsSheetOpen) {
             setIsClipMuted((prev) => {
@@ -271,9 +243,10 @@ const ClipItem = ({ clip, isClipMuted, setIsClipMuted }) => {
       className="clip-container"
       style={{ position: "relative" }}
       onClick={handleClipClick}
-      onTouchStart={startPressTimer}
-      onTouchEnd={clearPressTimer}
-      onTouchCancel={clearPressTimer}
+      onMouseDown={(e) => handlePress(e, "start")}
+      onMouseUp={() => handlePress(null, "end")}
+      onTouchStart={(e) => handlePress(e, "start")}
+      onTouchEnd={() => handlePress(null, "end")}
     >
       <video
         ref={clipRef}
@@ -292,7 +265,7 @@ const ClipItem = ({ clip, isClipMuted, setIsClipMuted }) => {
         className="clip-overlay"
         style={{
           transition: "opacity .3s",
-          opacity: isLongPress ? 0 : 1,
+          opacity: 1,
         }}
       >
         <div className="clip-details">
@@ -339,7 +312,7 @@ const ClipItem = ({ clip, isClipMuted, setIsClipMuted }) => {
             ) : (
               <svg
                 aria-label="Unlike"
-                fill="#ff5757"
+                fill="red"
                 height="30"
                 role="img"
                 viewBox="0 0 48 48"
@@ -349,7 +322,11 @@ const ClipItem = ({ clip, isClipMuted, setIsClipMuted }) => {
                 <path d="M34.6 3.1c-4.5 0-7.9 1.8-10.6 5.6-2.7-3.7-6.1-5.5-10.6-5.5C6 3.1 0 9.6 0 17.6c0 7.3 5.4 12 10.6 16.5.6.5 1.3 1.1 1.9 1.7l2.3 2c4.4 3.9 6.6 5.9 7.6 6.5.5.3 1.1.5 1.6.5s1.1-.2 1.6-.5c1-.6 2.8-2.2 7.8-6.8l2-1.8c.7-.6 1.3-1.2 2-1.7C42.7 29.6 48 25 48 17.6c0-8-6-14.5-13.4-14.5z"></path>
               </svg>
             )}
-            <label>{isLiked ? clip.engagement.likesCount + 1 : clip.engagement.likesCount}</label>
+            <label>
+              {isLiked
+                ? clip.engagement.likesCount + 1
+                : clip.engagement.likesCount}
+            </label>
           </span>
           <span
             className="clip-engagement--comments"
@@ -462,6 +439,22 @@ const ClipItem = ({ clip, isClipMuted, setIsClipMuted }) => {
           0 0 0-1 1v10.003a1 1 0 0 0 1 1h3.265l5.01 4.682.02.021a1 1 0 0 0
           1.704-.814L12.005 2a1 1 0 0 0-.602-.917Z"
                 ></path>
+              </svg>
+            )}
+          </div>
+          <div className={`absolute ${showAnimatedHeart ? "" : "hidden"}`}>
+            {showAnimatedHeart && (
+              <svg
+                aria-label="Like Animation"
+                className="like-animation"
+                fill="red"
+                height="120"
+                role="img"
+                viewBox="0 0 48 48"
+                width="120"
+              >
+                <title>Like Animation</title>
+                <path d="M34.6 3.1c-4.5 0-7.9 1.8-10.6 5.6-2.7-3.7-6.1-5.5-10.6-5.5C6 3.1 0 9.6 0 17.6c0 7.3 5.4 12 10.6 16.5.6.5 1.3 1.1 1.9 1.7l2.3 2c4.4 3.9 6.6 5.9 7.6 6.5.5.3 1.1.5 1.6.5s1.1-.2 1.6-.5c1-.6 2.8-2.2 7.8-6.8l2-1.8c.7-.6 1.3-1.2 2-1.7C42.7 29.6 48 25 48 17.6c0-8-6-14.5-13.4-14.5z"></path>
               </svg>
             )}
           </div>

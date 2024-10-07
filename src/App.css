@@ -1395,7 +1395,7 @@ b {
   justify-content: space-between;
   align-items: center;
   flex-direction: column;
-  height: 50%;
+  height: 45%;
 }
 
 .clip-engagement span {
@@ -1471,6 +1471,43 @@ b {
 .clip-comments--sheet-content {
   overflow-y: scroll;
   scrollbar-width: none;
+}
+
+.like-animation {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 0px;
+  opacity: 0;
+  animation: heartAnimation 1.2s ease forwards;
+}
+
+@keyframes heartAnimation {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0;
+  }
+  20% {
+    transform: translate(-50%, -50%) scale(1.4);
+    opacity: 1;
+  }
+  40% {
+    transform: translate(-50%, -50%) scale(1.2);
+    opacity: 1;
+  }
+  60% {
+    transform: translate(-50%, -50%) scale(1.2);
+    opacity: 1;
+  }
+  80% {
+    transform: translate(-50%, -50%) scale(0.8);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0;
+  }
 }
 
 /*--------------------------------------------------------------
@@ -1731,7 +1768,7 @@ b {
   width: 3.7rem;
   height: 3.7rem;
   object-fit: cover;
-  border-radius: 0.2rem; 
+  border-radius: 0.2rem;
   /* width: 3.7rem;
   height: 3.7rem;
   flex-grow: 1; */
@@ -2726,7 +2763,7 @@ b {
   align-items: center;
   text-align: center;
   flex-direction: column;
-    height: 90%;
+  height: 90%;
   overflow-x: hidden;
   overflow-y: scroll;
 }
@@ -2748,7 +2785,6 @@ b {
     display: none;
   }
 }
-
 
 @media screen and (max-width: 950px) {
   .chat-area {
