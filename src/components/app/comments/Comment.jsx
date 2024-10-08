@@ -3,6 +3,7 @@ import React, { useState } from "react";
 function Comment({ comment }) {
   const [areRepliesVisible, setAreRepliesVisible] = useState(false);
   const [visibleRepliesCount, setVisibleRepliesCount] = useState(5);
+  const [isCommentLiked, setIsCommentLiked] = useState(false);
 
   const toggleReplies = () => {
     if (!areRepliesVisible) {
@@ -53,12 +54,20 @@ function Comment({ comment }) {
           alt="User avatar"
         />
       </div>
+      <div
+        className="absolute end-0 flex justify-center items-center w-16 h-16"
+        onClick={() => setIsCommentLiked(!isCommentLiked)}
+      >
+        <i
+          className={`${
+            isCommentLiked ? "fas fa-heart text-red-600" : "fal fa-heart"
+          } text-xl cursor-pointer`}
+        ></i>
+      </div>
       <div className="flex flex-col w-full max-w-full">
         <p className="text-[.7rem]">{comment.username}</p>
         <p className="text-xs mt-1 break-words">{comment.content}</p>
-        <p className="text-[.7rem] my-2 text-gray-400 cursor-pointer">
-          Reply
-        </p>
+        <p className="text-[.7rem] my-2 text-gray-400 cursor-pointer">Reply</p>
 
         {renderReplies()}
         {comment.replies.length > 0 && (

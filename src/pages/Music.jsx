@@ -14,6 +14,8 @@ import spotifyLogo from "@/assets/media/img/logo/spotifyLogo.svg";
 import WebSpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
+import { ID3Writer } from "browser-id3-writer";
+
 Modal.setAppElement("#root");
 const Music = () => {
   const {
@@ -133,33 +135,63 @@ const Music = () => {
     }
   }, [saavnApiBaseUrl]);
 
-  const downloadTrack = async (trackId) => {
-    try {
-      const response = await axios.get(modalDownloadData.fileUrl, {
-        responseType: "blob",
-        onDownloadProgress: (progressEvent) => {
-          const total = progressEvent.total || 1;
-          const current = progressEvent.loaded;
-          const percentCompleted = Math.floor((current / total) * 100);
-          setDownloadProgress(percentCompleted);
-        },
-      });
-
-      const blob = new Blob([response.data], { type: "audio/mp4" });
-
-      const link = document.createElement("a");
-      link.href = window.URL.createObjectURL(blob);
-      link.download = modalDownloadData.fileName;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-
-      closeDownloadModal();
-      setDownloadProgress(0);
-    } catch (error) {
-      console.error(`Error downloading track: ${error.message}`);
+const downloadTrack = async (trackId) => {
+  try {
+    if (!modalDownloadData || !modalDownloadData.fileUrl) {
+      console.error("Download data is not properly set");
+      return;
     }
-  };
+
+    const response = await axios.get(modalDownloadData.fileUrl, {
+      responseType: "blob",
+      onDownloadProgress: (progressEvent) => {
+        const total = progressEvent.total || 1;
+        const current = progressEvent.loaded;
+        const percentCompleted = Math.floor((current / total) * 100);
+        setDownloadProgress(percentCompleted);
+      },
+    });
+
+    const audioBlob = new Blob([response.data], { type: "audio/mp4" });
+    
+    // Fetch the image and convert it to ArrayBuffer
+    const imageBlob = await fetch(modalDownloadData.fileImage).then(res => res.blob());
+    const imageBuffer = await imageBlob.arrayBuffer(); // Get the ArrayBuffer from the image blob
+
+    // Create a new instance of ID3Writer with the audio ArrayBuffer
+    const writer = new ID3Writer(await audioBlob.arrayBuffer()); // Convert the audio blob to ArrayBuffer
+
+    writer.setFrame('APIC', {
+      data: imageBuffer, // Use the image ArrayBuffer
+      type: 3, // 3 is for images
+      description: 'Cover',
+      mime: 'image/jpeg', // Adjust the mime type as necessary
+    });
+
+    // Set other metadata
+    writer.setFrame('TIT2', modalDownloadData.fileName.split(' - ')[0]); // Title
+    writer.setFrame('TPE1', [modalDownloadData.fileName.split(' - ')[1]]); // Artist
+    writer.setFrame('TCON', ['Your Genre']); // Genre (optional)
+    writer.setFrame('TYER', new Date().getFullYear()); // Year
+
+    // Finalize and get the blob with ID3 tags
+    writer.addTag();
+    const taggedBlob = writer.getBlob();
+
+    const link = document.createElement("a");
+    link.href = window.URL.createObjectURL(taggedBlob);
+    link.download = modalDownloadData.fileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    closeDownloadModal();
+    setDownloadProgress(0);
+  } catch (error) {
+    console.error(`Error downloading track: ${error.message}`);
+  }
+};
+
 
   const playTrack = async (trackId) => {
     if (isAudioPlaying) return;
@@ -188,7 +220,7 @@ const Music = () => {
           if (trackData) {
             const { link, ...rest } = trackData;
             setCurrentTrack(rest);
-            setIsTrackDeckModalOpen(true)
+            setIsTrackDeckModalOpen(true);
             if (playParam === "true") {
               setIsTrackDeckModalOpen(true);
             }
@@ -268,13 +300,17 @@ const Music = () => {
   const openDownloadModal = async (trackId) => {
     try {
       setIsDownloadLoading(true);
-      const { data } = await axios.get(`${saavnApiBaseUrl}/songs/${trackId}`);
-
-      const resultData = data.data[0];
-      const artistsArray = resultData.artists.primary;
+      let trackData;
+      if (currentTrack.id !== trackId) {
+        trackData = await getTrackData(trackId);
+        console.log(trackData);
+      }
       setModalDownloadData({
-        fileUrl: resultData.downloadUrl[3].url,
-        fileName: `${resultData.name} - ${artistsArray[0].name}.mp3`,
+        fileUrl: trackData.link,
+        fileName: `${trackData.name} - ${trackData.artists
+          .split(",")[0]
+          .trim()}.mp3`,
+        fileImage: trackData.image,
       });
       setIsDownloadModalOpen(true);
       setApiError(false);
@@ -532,14 +568,17 @@ const Music = () => {
           style={customModalStyles}
         >
           <h4>Do you want to download?</h4>
-          <b style={{ color: "var(--fm-primary-text)" }}>
-            {modalDownloadData.trackName}
-            <br />
-            •&nbsp;&nbsp;320kbps (High Quality)
-            <br />
-            <br />
-          </b>
-          <p>Download in progress: {downloadProgress}%</p>
+          <div className="flex my-4 items-center bg-gray-800 p-2 rounded">
+            <img
+              src={modalDownloadData.fileImage}
+              className="w-15 h-15 rounded"
+              alt="File Image"
+            />
+            <p className="text-[--fm-primary-text] mx-2">
+              {modalDownloadData.fileName}
+            </p>
+          </div>
+          <p className="mb-3">Download in progress: {downloadProgress}%</p>
           <progress value={downloadProgress} max="100"></progress>
           <button
             className="fm-primary-btn-inverse"
@@ -712,17 +751,11 @@ const Music = () => {
               />
             </svg>
             <br />
-            <p style={{ color: "var(--fm-primary-text-muted)" }}>
+            <p className="text-[--fm-primary-text-muted] mb-3">
               Play a track to feel the vibe.
             </p>
             <button
-              style={{
-                padding: ".5rem .7rem",
-                fontSize: ".7rem",
-                border: "none",
-                borderRadius: ".3rem",
-                backgroundColor: "#0095f6",
-              }}
+              className="p-2 text-xs border-none rounded bg-blue-600"
               onClick={() => getTrack(tracks[0].id)}
             >
               Play the first track

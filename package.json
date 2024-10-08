@@ -18,6 +18,7 @@
     "@vitejs/plugin-react": "^4.3.1",
     "@vitejs/plugin-react-refresh": "^1.3.6",
     "axios": "^1.6.5",
+    "browser-id3-writer": "^6.1.0",
     "browser-video-thumbnail-generator": "^2.0.1",
     "capacitor": "^0.5.6",
     "file64": "^1.0.3",

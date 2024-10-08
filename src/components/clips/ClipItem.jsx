@@ -50,41 +50,54 @@ const ClipItem = ({ clip, isClipMuted, setIsClipMuted }) => {
   }, []);
 
   const handleClipClick = (event) => {
-    if (
-      !event.target.closest(
-        ".clip-details-creator, .clip-details-metadata, .clip-engagement, .clip-controls--progressbar",
-      )
-    ) {
-      clickCountRef.current += 1;
-
-      if (clickTimeoutRef.current) {
-        clearTimeout(clickTimeoutRef.current);
-      }
-
-      clickTimeoutRef.current = setTimeout(() => {
-        if (clickCountRef.current === 2) {
-          setIsLiked(true);
-          setShowAnimatedHeart(true);
-          setTimeout(() => {
-            setShowAnimatedHeart(false);
-          }, 800);
-        } else if (clickCountRef.current === 1) {
-          if (!isCommentsSheetOpen) {
-            setIsClipMuted((prev) => {
-              const newMuteState = !prev;
-              setIsMuteChange(true);
-              setTimeout(() => {
-                setIsMuteChange(false);
-              }, 1000);
-              return newMuteState;
-            });
-          }
-        }
-
-        clickCountRef.current = 0;
-      }, 200);
+    const excludedClasses = [
+      ".clip-details-creator",
+      ".clip-details-metadata",
+      ".clip-engagement",
+      ".clip-controls--progressbar",
+    ];
+  
+    // If the target is inside one of the excluded elements, return early
+    if (excludedClasses.some((cls) => event.target.closest(cls))) {
+      return;
     }
+  
+    // Increment click count
+    clickCountRef.current += 1;
+  
+    // Clear any existing timeout to reset the delay between clicks
+    if (clickTimeoutRef.current) {
+      clearTimeout(clickTimeoutRef.current);
+    }
+  
+    // Set timeout to check for single vs double click
+    clickTimeoutRef.current = setTimeout(() => {
+      if (clickCountRef.current === 2) {
+        // Double-click logic: like the clip and show animated heart
+        setIsLiked(true);
+        setShowAnimatedHeart(true);
+        setTimeout(() => {
+          setShowAnimatedHeart(false);
+        }, 500); // Reduced animation time for smoother UX
+      } else if (clickCountRef.current === 1) {
+        // Single-click logic: mute/unmute if comments sheet isn't open
+        if (!isCommentsSheetOpen) {
+          setIsClipMuted((prev) => {
+            const newMuteState = !prev;
+            setIsMuteChange(true);
+            setTimeout(() => {
+              setIsMuteChange(false);
+            }, 500); // Reduced mute change time for faster feedback
+            return newMuteState;
+          });
+        }
+      }
+  
+      // Reset click count
+      clickCountRef.current = 0;
+    }, 180); // Reduced timeout for faster detection
   };
+  
 
   const handleProgressBarClick = (e) => {
     const clip = clipRef.current;
