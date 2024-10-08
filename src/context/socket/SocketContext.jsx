@@ -8,7 +8,7 @@ import React, {
 import { createSocket } from "@/hooks/user/useSocketService";
 import UserContext from "@/context/user/UserContext";
 
-const SOCKET_URL = "http://localhost:4000";
+const SOCKET_URL = "https://fm-server.2xtf.onrender.com";
 
 const SocketContext = createContext(null);
 
