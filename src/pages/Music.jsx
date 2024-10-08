@@ -154,27 +154,23 @@ const downloadTrack = async (trackId) => {
 
     const audioBlob = new Blob([response.data], { type: "audio/mp4" });
     
-    // Fetch the image and convert it to ArrayBuffer
     const imageBlob = await fetch(modalDownloadData.fileImage).then(res => res.blob());
-    const imageBuffer = await imageBlob.arrayBuffer(); // Get the ArrayBuffer from the image blob
+    const imageBuffer = await imageBlob.arrayBuffer();
 
-    // Create a new instance of ID3Writer with the audio ArrayBuffer
-    const writer = new ID3Writer(await audioBlob.arrayBuffer()); // Convert the audio blob to ArrayBuffer
+    const writer = new ID3Writer(await audioBlob.arrayBuffer());
 
     writer.setFrame('APIC', {
-      data: imageBuffer, // Use the image ArrayBuffer
-      type: 3, // 3 is for images
+      data: imageBuffer,
+      type: 3,
       description: 'Cover',
-      mime: 'image/jpeg', // Adjust the mime type as necessary
+      mime: 'image/jpeg',
     });
 
-    // Set other metadata
-    writer.setFrame('TIT2', modalDownloadData.fileName.split(' - ')[0]); // Title
-    writer.setFrame('TPE1', [modalDownloadData.fileName.split(' - ')[1]]); // Artist
-    writer.setFrame('TCON', ['Your Genre']); // Genre (optional)
-    writer.setFrame('TYER', new Date().getFullYear()); // Year
+    writer.setFrame('TIT2', modalDownloadData.fileName.split(' - ')[0]);
+    writer.setFrame('TPE1', [modalDownloadData.fileName.split(' - ')[1]]);
+    writer.setFrame('TCON', ['Your Genre']);
+    writer.setFrame('TYER', new Date().getFullYear());
 
-    // Finalize and get the blob with ID3 tags
     writer.addTag();
     const taggedBlob = writer.getBlob();
 
