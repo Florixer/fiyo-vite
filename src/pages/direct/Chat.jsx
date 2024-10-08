@@ -13,7 +13,6 @@ const Chat = () => {
   document.title = "@jason.fiyo - Chat • Flexiyo";
   const { socket } = useSocket();
   const { userInfo } = useContext(UserContext);
-  const [userMessage, setUserMessage] = useState("");
   const [inputText, setInputText] = useState("");
   const inputMessageRef = useRef(null);
   const [messages, setMessages] = useState([]);
@@ -35,23 +34,28 @@ const Chat = () => {
   }, []);
 
   const { currentRoomId } = useParams();
-  const roomId = parseInt(currentRoomId, 10);
+  const { socketUser } = useSocket();
+
+  // Find roomId based on currentRoomId
+  const roomId = socketUser.joinedRoomIds[0]
+
+;
 
   useEffect(() => {
     if (!socket) return;
+
     const handleReceiveMessage = (avatar, username, message) => {
       setMessages((prevMessages) => [
         ...prevMessages,
-        {
-          avatar: avatar,
-          sender: username,
-          text: message,
-        },
+        { avatar, sender: username, text: message },
       ]);
+      console.log("Received message:", avatar, username, message);
+      
       scrollToBottom();
     };
 
     socket.on("receive-message", handleReceiveMessage);
+
     return () => {
       socket.off("receive-message", handleReceiveMessage);
     };
@@ -68,26 +72,22 @@ const Chat = () => {
 
   const handleSendMessage = (event) => {
     event.preventDefault();
-    if (inputText !== "") {
-      setMessages([
-        ...messages,
-        {
-          sender: userInfo.username,
-          text: inputText,
-        },
+    if (inputText.trim()) {
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { sender: userInfo.username, text: inputText },
       ]);
       socket.emit(
         "send-message",
         roomId,
         userInfo.avatar,
         userInfo.username,
-        inputText,
+        inputText
       );
-      setUserMessage("");
-      setInputText("");
+      setInputText(""); // Reset input after sending
+      scrollToBottom();
+      inputMessageRef.current.focus();
     }
-    scrollToBottom();
-    inputMessageRef.current.focus();
   };
 
   const openUserFilesSheet = () => {
@@ -105,7 +105,7 @@ const Chat = () => {
         isUserFilesSheetOpen={isUserFilesSheetOpen}
         setIsUserFilesSheetOpen={setIsUserFilesSheetOpen}
       />
-      {!isMobile ? <InboxList /> : null}
+      {!isMobile && <InboxList />}
       <div className="chat-area">
         <CustomTopNavbar
           navbarPrevPage={isMobile ? "/direct/inbox" : null}
@@ -146,21 +146,16 @@ const Chat = () => {
                 message.sender !== userInfo.username ? "other" : "self"
               }`}
             >
-              {message.sender !== userInfo.username ? (
+              {message.sender !== userInfo.username && (
                 <LazyLoadImage
                   src={message.avatar}
                   className="chat-message--other-pfp"
                   alt="user-pfp"
                 />
-              ) : null}
+              )}
               <span msg-type="text">{message.text}</span>
             </div>
           ))}
-          {userMessage && (
-            <div className="chat-message--self">
-              <span msg-type="text">{userMessage}</span>
-            </div>
-          )}
         </div>
         <div className="chat-messenger">
           <form className="chat-messenger-box" onSubmit={handleSendMessage}>

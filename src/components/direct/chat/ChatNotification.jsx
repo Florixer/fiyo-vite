@@ -26,17 +26,23 @@ const ChatNotification = () => {
   }, [socket, userInfo.username]);
 
   return (
-    <div className={`chat-notification ${notification ? "active" : ""}`}>
+    <div
+      className={`fixed flex justify-around items-center w-full top-[-5rem] h-20 p-3 bg-[--fm-tertiary-bg-color] z-50 transition-all duration-200 ease-in-out ${
+        notification ? "top-0" : ""
+      }`}
+    >
       {notification && (
         <>
-          <div className="chat-notification--pfp">
-            <img src={notification.cover} alt="notification-pfp" />
-          </div>
-          <div className="chat-notification--body">
-            <span className="chat-notification--body-title">
+          <img
+            src={notification.cover}
+            className="w-14 h-14 rounded-full"
+            alt="Notification Cover"
+          />
+          <div className="flex flex-col w-full mx-4">
+            <span className="text-[--fm-primary-text] text-base overflow-hidden whitespace-nowrap overflow-ellipsis w-9/10">
               {notification.title}
             </span>
-            <span className="chat-notification--body-content">
+            <span className="text-gray-400 text-base truncate whitespace-nowrap overflow-hidden w-9/10 mt-1.5">
               {notification.content}
             </span>
           </div>

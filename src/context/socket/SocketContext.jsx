@@ -8,8 +8,7 @@ import React, {
 import { createSocket } from "@/hooks/user/useSocketService";
 import UserContext from "@/context/user/UserContext";
 
-const SOCKET_URL =
-  "https://fm-server-2xtf.onrender.com" || "http://localhst:4000";
+const SOCKET_URL = "http://localhost:4000";
 
 const SocketContext = createContext(null);
 
@@ -17,7 +16,7 @@ export const SocketProvider = ({ children }) => {
   const { userInfo, isUserAuthenticated } = useContext(UserContext);
   const [socketUser, setSocketUser] = useState({
     id: null,
-    joinedRoomIds: [2963293620915324],
+    joinedRoomIds: [2963293620915324, 2963293620915325],
   });
 
   const socketRef = useRef(null);
@@ -47,8 +46,8 @@ export const SocketProvider = ({ children }) => {
             ...prevState,
             id: socketRef.current.id,
           }));
-
-          if (userInfo?.username) {
+          // if (userInfo.username) {  TODO: To implement in production
+          if (userInfo) {
             console.log("Emitting join-rooms with:", socketUser.joinedRoomIds);
             socketRef.current.emit(
               "join-rooms",

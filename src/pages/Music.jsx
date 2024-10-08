@@ -14,7 +14,6 @@ import spotifyLogo from "@/assets/media/img/logo/spotifyLogo.svg";
 import WebSpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
-import { ID3Writer } from "browser-id3-writer";
 
 Modal.setAppElement("#root");
 const Music = () => {
@@ -135,59 +134,25 @@ const Music = () => {
     }
   }, [saavnApiBaseUrl]);
 
-const downloadTrack = async (trackId) => {
-  try {
-    if (!modalDownloadData || !modalDownloadData.fileUrl) {
-      console.error("Download data is not properly set");
-      return;
+  const downloadTrack = async (trackId) => {
+    try {
+      const response = await axios.get(modalDownloadData.fileUrl, {
+        responseType: "blob",
+      });
+      const audioBlob = response.data;
+
+      const finalBlob = new Blob([audioBlob], { type: "audio/mpeg" });
+
+      const link = document.createElement("a");
+      link.href = window.URL.createObjectURL(finalBlob);
+      link.download = modalDownloadData.fileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error(`Error downloading track: ${error.message}`);
     }
-
-    const response = await axios.get(modalDownloadData.fileUrl, {
-      responseType: "blob",
-      onDownloadProgress: (progressEvent) => {
-        const total = progressEvent.total || 1;
-        const current = progressEvent.loaded;
-        const percentCompleted = Math.floor((current / total) * 100);
-        setDownloadProgress(percentCompleted);
-      },
-    });
-
-    const audioBlob = new Blob([response.data], { type: "audio/mp4" });
-    
-    const imageBlob = await fetch(modalDownloadData.fileImage).then(res => res.blob());
-    const imageBuffer = await imageBlob.arrayBuffer();
-
-    const writer = new ID3Writer(await audioBlob.arrayBuffer());
-
-    writer.setFrame('APIC', {
-      data: imageBuffer,
-      type: 3,
-      description: 'Cover',
-      mime: 'image/jpeg',
-    });
-
-    writer.setFrame('TIT2', modalDownloadData.fileName.split(' - ')[0]);
-    writer.setFrame('TPE1', [modalDownloadData.fileName.split(' - ')[1]]);
-    writer.setFrame('TCON', ['Your Genre']);
-    writer.setFrame('TYER', new Date().getFullYear());
-
-    writer.addTag();
-    const taggedBlob = writer.getBlob();
-
-    const link = document.createElement("a");
-    link.href = window.URL.createObjectURL(taggedBlob);
-    link.download = modalDownloadData.fileName;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-
-    closeDownloadModal();
-    setDownloadProgress(0);
-  } catch (error) {
-    console.error(`Error downloading track: ${error.message}`);
-  }
-};
-
+  };
 
   const playTrack = async (trackId) => {
     if (isAudioPlaying) return;
@@ -299,7 +264,8 @@ const downloadTrack = async (trackId) => {
       let trackData;
       if (currentTrack.id !== trackId) {
         trackData = await getTrackData(trackId);
-        console.log(trackData);
+      } else {
+        trackData = currentTrack;
       }
       setModalDownloadData({
         fileUrl: trackData.link,
@@ -577,7 +543,7 @@ const downloadTrack = async (trackId) => {
           <p className="mb-3">Download in progress: {downloadProgress}%</p>
           <progress value={downloadProgress} max="100"></progress>
           <button
-            className="fm-primary-btn-inverse"
+            className="fm-primary-btn-inverse mt-3"
             onClick={closeDownloadModal}
             style={{
               position: "absolute",
