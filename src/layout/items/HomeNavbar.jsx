@@ -2,7 +2,7 @@ import React from "react";
 import Headroom from "react-headroom";
 import { Link } from "react-router-dom";
 import matchMedia from "matchmedia";
-import logo from "@/assets/media/img/logo/flexomate_light.svg";
+import logo from "@/assets/media/img/logo/flexiyo.svg";
 const HomeNavbar = () => {
   const [isMobile, setIsMobile] = React.useState(false);
 
