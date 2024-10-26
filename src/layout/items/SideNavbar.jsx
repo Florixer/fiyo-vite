@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { NavLink } from "react-router-dom";
 import UserContext from "@/context/user/UserContext";
-import logoImg from "@/assets/media/img/logo/flexomate_light.svg";
+import logoImg from "@/assets/media/img/logo/flexiyo.svg";
 import defaultUserPfp from "@/assets/media/img/default-avatar.png";
 
 export default function SideNavbar() {
