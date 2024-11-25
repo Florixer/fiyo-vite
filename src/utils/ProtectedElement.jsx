@@ -1,9 +1,11 @@
 import React, { useState, useContext, useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import UserContext from "@/context/user/UserContext";
 
 const ProtectedElement = ({ children }) => {
   const { isUserAuthenticated } = useContext(UserContext);
   const [showModal, setShowModal] = useState(!isUserAuthenticated);
+  const history = useHistory();
 
   useEffect(() => {
     setShowModal(!isUserAuthenticated);
@@ -13,17 +15,29 @@ const ProtectedElement = ({ children }) => {
     setShowModal(false);
   };
 
+  const handleLoginRedirect = () => {
+    history.push("/auth/login");
+    handleCloseModal();
+  };
+
+  const handleChildClick = () => {
+    if (!isUserAuthenticated) {
+      setShowModal(true);
+    }
+  };
+
   return (
-    <div>
+    <div onClick={handleChildClick}>
       {isUserAuthenticated ? (
         children
       ) : (
         showModal && (
           <div style={modalStyles}>
             <div style={modalContentStyles}>
-              <h2>Unauthorized</h2>
-              <p>You are not authorized to view this content.</p>
+              <h2>Please Login to Flexiyo</h2>
+              <p>You are not allowed to interact with this content.</p>
               <button onClick={handleCloseModal}>Close</button>
+              <button onClick={handleLoginRedirect}>Login</button>
             </div>
           </div>
         )

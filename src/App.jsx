@@ -139,9 +139,7 @@ const App = () => {
             path="/clips"
             lazy={true}
             element={
-              <ProtectedRoute>
                 <Clips />
-              </ProtectedRoute>
             }
           />
           <Route

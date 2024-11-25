@@ -13,11 +13,11 @@ const useMusicUtility = () => {
     setIsAudioPlaying,
   } = useContext(MusicContext);
 
-  const saavnApiBaseUrl = "https://fiyosaavn.vercel.app/api";
+  const fiyosaavnApiBaseUri = process.env.VITE_FIYOSAAVN_API_BASE_URI;
 
   const getTrackData = async (trackId) => {
     try {
-      const { data } = await axios.get(`${saavnApiBaseUrl}/songs/${trackId}`);
+      const { data } = await axios.get(`${fiyosaavnApiBaseUri}/songs/${trackId}`);
       const resultData = data.data[0];
       const trackData = {
         id: resultData.id,
@@ -80,7 +80,7 @@ const useMusicUtility = () => {
     let currentTrackLyrics;
     if (currentTrack.hasLyrics) {
       const { data } = await axios.get(
-        `${saavnApiBaseUrl}/songs/${currentTrack.id}/lyrics`,
+        `${fiyosaavnApiBaseUri}/songs/${currentTrack.id}/lyrics`,
       );
       return {
         trackId: currentTrack.id,
@@ -161,7 +161,7 @@ const useMusicUtility = () => {
 
   const getSuggestedTrackId = async () => {
     const { data } = await axios.get(
-      `${saavnApiBaseUrl}/songs/${currentTrack.id}/suggestions`,
+      `${fiyosaavnApiBaseUri}/songs/${currentTrack.id}/suggestions`,
       { params: { limit: 5 } },
     );
     const suggestedTrackId = data.data[Math.floor(Math.random() * 5)].id;

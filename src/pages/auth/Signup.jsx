@@ -22,6 +22,8 @@ import logo from "@/assets/media/img/logo/flexomate_gradient.jpg";
 const Signup = () => {
   document.title = "Flexiyo";
 
+  const fiyoauthApiBaseUri = import.meta.env.VITE_FIYOAUTH_API_BASE_URI;
+
   const { isUserAuthenticated, setIsUserAuthenticated, setUserInfo } =
     useContext(UserContext);
   const [isMobile, setIsMobile] = useState(false);
@@ -150,7 +152,7 @@ const Signup = () => {
     setIsCreateUserAccountReqLoading(true);
     try {
       const response = await axios.post(
-        `${process.env.VITE_FMAPI_BASEURL}/users/create_account`,
+        `${fiyoauthApiBaseUri}/users/create_account`,
         {
           ...firstFormik.values,
           ...secondFormik.values,

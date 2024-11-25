@@ -8,7 +8,7 @@ import React, {
 import { createSocket } from "@/hooks/user/useSocketService";
 import UserContext from "@/context/user/UserContext";
 
-const SOCKET_URL = "https://fm-server.2xtf.onrender.com";
+const SOCKET_URL = "http://localhost:8000";
 
 const SocketContext = createContext(null);
 
@@ -16,8 +16,8 @@ export const SocketProvider = ({ children }) => {
   const { userInfo, isUserAuthenticated } = useContext(UserContext);
   const [socketUser, setSocketUser] = useState({
     id: null,
-    joinedRoomIds: [2963293620915324, 2963293620915325],
   });
+  const [inboxItems, setInboxItems] = useState([]);
 
   const socketRef = useRef(null);
   const initialized = useRef(false);
@@ -37,6 +37,9 @@ export const SocketProvider = ({ children }) => {
       socketRef.current = createSocket(SOCKET_URL, {
         withCredentials: true,
         transports: ["websocket"],
+        query: {
+          user_id: "123456",
+        },
       });
 
       if (!initialized.current) {
@@ -46,16 +49,11 @@ export const SocketProvider = ({ children }) => {
             ...prevState,
             id: socketRef.current.id,
           }));
-          // if (userInfo.username) {  TODO: To implement in production
-          if (userInfo) {
-            console.log("Emitting join-rooms with:", socketUser.joinedRoomIds);
-            socketRef.current.emit(
-              "join-rooms",
-              socketUser.joinedRoomIds,
-              socketRef.current.id,
-              userInfo.username,
-            );
-          }
+        });
+
+        socketRef.current.on("roomsListResponse", (response) => {
+          console.log(response);
+          // setInboxItems(response)
         });
 
         socketRef.current.on("disconnect", () => {
@@ -68,7 +66,14 @@ export const SocketProvider = ({ children }) => {
   }, [isUserAuthenticated, userInfo, socketUser.joinedRoomIds]);
 
   return (
-    <SocketContext.Provider value={{ socket: socketRef.current, socketUser }}>
+    <SocketContext.Provider
+      value={{
+        socket: socketRef.current,
+        socketUser,
+        inboxItems,
+        setInboxItems,
+      }}
+    >
       {children}
     </SocketContext.Provider>
   );

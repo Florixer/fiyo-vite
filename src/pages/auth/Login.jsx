@@ -18,10 +18,10 @@ const Login = () => {
   const [isLoginUserAccountReqLoading, setIsLoginUserAccountReqLoading] =
     useState(false);
 
-  const fiyoapiBaseUrl = "https://fiyoapi.vercel.app/api";
+  const fiyoauthApiBaseUri = import.meta.env.VITE_FIYOAUTH_API_BASE_URI;
 
   const LoginSchema = Yup.object().shape({
-    emailOrUsername: Yup.string().required("Email or Username is required"),
+    username: Yup.string().required("Email or Username is required"),
     password: Yup.string().required("Password is required"),
   });
 
@@ -41,7 +41,7 @@ const Login = () => {
 
   const formik = useFormik({
     initialValues: {
-      emailOrUsername: "",
+      username: "",
       password: "",
     },
     validationSchema: LoginSchema,
@@ -61,11 +61,14 @@ const Login = () => {
     setIsLoginUserAccountReqLoading(true);
     try {
       const response = await axios.post(
-        `${fiyoapiBaseUrl}/users/login_account`,
+        `${fiyoauthApiBaseUri}/users/login`,
         {
-          emailOrUsername: values.emailOrUsername,
+          username: values.username,
           password: values.password,
         },
+        {
+          withCredentials: true,
+        }
       );
       setIsUserAuthenticated(true);
       setIsLoginUserAccountReqLoading(false);
@@ -178,20 +181,20 @@ const Login = () => {
           <form onSubmit={formik.handleSubmit}>
             <TextField
               margin="normal"
-              id="emailOrUsername"
+              id="username"
               type="text"
               label="Email or Username *"
               variant="outlined"
               fullWidth
-              name="emailOrUsername"
-              value={formik.values.emailOrUsername}
+              name="username"
+              value={formik.values.username}
               onChange={formik.handleChange}
               error={
-                formik.touched.emailOrUsername &&
-                Boolean(formik.errors.emailOrUsername)
+                formik.touched.username &&
+                Boolean(formik.errors.username)
               }
               helperText={
-                formik.touched.emailOrUsername && formik.errors.emailOrUsername
+                formik.touched.username && formik.errors.username
               }
               InputProps={{
                 style: { borderRadius: ".7rem" },

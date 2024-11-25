@@ -1,7 +1,5 @@
 import React from "react";
-import Headroom from "react-headroom";
 import matchMedia from "matchmedia";
-import CustomTopNavbar from "@/layout/items/CustomTopNavbar";
 import ContentViewport from "@/components/create/ContentViewport";
 import ContentSelection from "@/components/create/ContentSelection";
 const Create = () => {

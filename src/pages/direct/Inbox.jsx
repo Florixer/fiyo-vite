@@ -71,6 +71,7 @@ const Inbox = () => {
             <p style={{ color: "var(--fm-primary-text-muted)" }}>
               Send a message to start a chat.
             </p>
+            <br/>
             <button
               style={{
                 padding: ".5rem .7rem",

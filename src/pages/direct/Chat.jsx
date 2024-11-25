@@ -1,196 +1,170 @@
 import React, { useRef, useState, useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
-import matchMedia from "matchmedia";
-import { LazyLoadImage } from "react-lazy-load-image-component";
 import CustomTopNavbar from "@/layout/items/CustomTopNavbar";
 import InboxList from "@/components/direct/InboxList";
 import UserFilesSheet from "@/components/direct/chat/UserFilesSheet";
 import UserContext from "@/context/user/UserContext";
-import demoPersonPfp from "@/assets/media/img/demo-person.jpg";
 import { useSocket } from "@/context/socket/SocketContext";
 
 const Chat = () => {
-  document.title = "@jason.fiyo - Chat • Flexiyo";
   const { socket } = useSocket();
   const { userInfo } = useContext(UserContext);
   const [inputText, setInputText] = useState("");
-  const inputMessageRef = useRef(null);
   const [messages, setMessages] = useState([]);
   const [isUserFilesSheetOpen, setIsUserFilesSheetOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const mediaQuery = matchMedia("(max-width: 950px)");
-    const handleMediaQueryChange = () => {
-      setIsMobile(mediaQuery.matches);
-    };
-
-    mediaQuery.addListener(handleMediaQueryChange);
-    handleMediaQueryChange();
-
-    return () => {
-      mediaQuery.removeListener(handleMediaQueryChange);
-    };
-  }, []);
-
   const { currentRoomId } = useParams();
-  const { socketUser } = useSocket();
-
-  // Find roomId based on currentRoomId
-  const roomId = socketUser.joinedRoomIds[0]
-
-;
+  const inputMessageRef = useRef(null);
 
   useEffect(() => {
-    if (!socket) return;
+    if (!socket || !currentRoomId) return;
 
-    const handleReceiveMessage = (avatar, username, message) => {
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { avatar, sender: username, text: message },
-      ]);
-      console.log("Received message:", avatar, username, message);
-      
-      scrollToBottom();
+    // Fetch messages for the room
+    socket.emit("get_messages", { roomId: currentRoomId });
+
+    const handleReceiveMessages = (messages) => {
+      setMessages(messages);
     };
 
-    socket.on("receive-message", handleReceiveMessage);
+    const handleNewMessage = ({ senderId, message, messageId }) => {
+      setMessages((prev) => [...prev, { senderId, message, messageId }]);
+    };
+
+    const handleEditMessage = ({ messageId, updatedMessage }) => {
+      setMessages((prev) =>
+        prev.map((msg) =>
+          msg.messageId === messageId ? { ...msg, message: updatedMessage } : msg
+        )
+      );
+    };
+
+    const handleDeleteMessage = ({ messageId }) => {
+      setMessages((prev) => prev.filter((msg) => msg.messageId !== messageId));
+    };
+
+    const handleReactToMessage = ({ messageId, reaction }) => {
+      setMessages((prev) =>
+        prev.map((msg) =>
+          msg.messageId === messageId
+            ? { ...msg, reactions: [...(msg.reactions || []), reaction] }
+            : msg
+        )
+      );
+    };
+
+    const handleUnreactToMessage = ({ messageId, reaction }) => {
+      setMessages((prev) =>
+        prev.map((msg) =>
+          msg.messageId === messageId
+            ? { ...msg, reactions: (msg.reactions || []).filter((r) => r !== reaction) }
+            : msg
+        )
+      );
+    };
+
+    socket.on("messages", handleReceiveMessages);
+    socket.on("message_received", handleNewMessage);
+    socket.on("message_edited", handleEditMessage);
+    socket.on("message_unsent", handleDeleteMessage);
+    socket.on("message_reacted", handleReactToMessage);
+    socket.on("message_unreacted", handleUnreactToMessage);
 
     return () => {
-      socket.off("receive-message", handleReceiveMessage);
+      socket.off("messages", handleReceiveMessages);
+      socket.off("message_received", handleNewMessage);
+      socket.off("message_edited", handleEditMessage);
+      socket.off("message_unsent", handleDeleteMessage);
+      socket.off("message_reacted", handleReactToMessage);
+      socket.off("message_unreacted", handleUnreactToMessage);
     };
-  }, [socket]);
-
-  const scrollToBottom = () => {
-    setTimeout(() => {
-      const scrollableDiv = document.getElementById("chat-messages");
-      if (scrollableDiv) {
-        scrollableDiv.scrollTop = scrollableDiv.scrollHeight;
-      }
-    }, 0);
-  };
+  }, [socket, currentRoomId]);
 
   const handleSendMessage = (event) => {
     event.preventDefault();
-    if (inputText.trim()) {
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { sender: userInfo.username, text: inputText },
-      ]);
-      socket.emit(
-        "send-message",
-        roomId,
-        userInfo.avatar,
-        userInfo.username,
-        inputText
-      );
-      setInputText(""); // Reset input after sending
-      scrollToBottom();
-      inputMessageRef.current.focus();
-    }
+    if (!inputText.trim() || !currentRoomId) return;
+
+    const messageId = Date.now(); // Temporary ID before backend assigns one
+    socket.emit("send_message", {
+      roomId: currentRoomId,
+      senderId: userInfo.userId,
+      message: inputText,
+      messageId,
+    });
+
+    setMessages((prev) => [
+      ...prev,
+      { senderId: userInfo.userId, message: inputText, messageId },
+    ]);
+    setInputText("");
+    inputMessageRef.current.focus();
   };
 
-  const openUserFilesSheet = () => {
-    setIsUserFilesSheetOpen(true);
+  const handleEditMessage = (messageId, newMessage) => {
+    socket.emit("edit_message", {
+      roomId: currentRoomId,
+      senderId: userInfo.userId,
+      messageId,
+      updatedMessage: newMessage,
+    });
   };
 
-  const closeUserFilesSheet = () => {
-    setIsUserFilesSheetOpen(false);
+  const handleDeleteMessage = (messageId) => {
+    socket.emit("unsend_message", {
+      roomId: currentRoomId,
+      senderId: userInfo.userId,
+      messageId,
+    });
+  };
+
+  const handleReactToMessage = (messageId, reaction) => {
+    socket.emit("react_to_message", {
+      roomId: currentRoomId,
+      senderId: userInfo.userId,
+      messageId,
+      reaction,
+    });
+  };
+
+  const handleUnreactToMessage = (messageId, reaction) => {
+    socket.emit("unreact_to_message", {
+      roomId: currentRoomId,
+      senderId: userInfo.userId,
+      messageId,
+      reaction,
+    });
   };
 
   return (
     <section id="chat">
       <UserFilesSheet
-        openUserFilesSheet={openUserFilesSheet}
         isUserFilesSheetOpen={isUserFilesSheetOpen}
         setIsUserFilesSheetOpen={setIsUserFilesSheetOpen}
       />
-      {!isMobile && <InboxList />}
+      <InboxList />
       <div className="chat-area">
-        <CustomTopNavbar
-          navbarPrevPage={isMobile ? "/direct/inbox" : null}
-          navbarCover={demoPersonPfp}
-          navbarTitle="jason.fiyo"
-          navbarFirstIcon="fa fa-phone"
-          navbarSecondIcon="fa fa-video"
-          setBorder={true}
-        />
-        <div
-          className="chat-messages"
-          id="chat-messages"
-          onClick={closeUserFilesSheet}
-        >
-          <div className="chat-details" onClick={closeUserFilesSheet}>
-            <div className="chat-details--pfp">
-              <LazyLoadImage src={demoPersonPfp} alt="chat-pfp" />
-            </div>
-            <div className="chat-details--name">Jason Barody</div>
-            <div className="chat-details--username">Flexiyo • jason.fiyo</div>
-            <div className="chat-details--button">
-              <button
-                className="fm-primary-btn-inverse"
-                style={{
-                  borderRadius: ".3rem",
-                  padding: ".5rem .7rem",
-                }}
-              >
-                View Profile
-              </button>
-            </div>
-            <div className="chat-details--first-time">Yesterday 10:15pm</div>
-          </div>
-          {messages.map((message, index) => (
+        <CustomTopNavbar navbarTitle="Chat Room" setBorder={true} />
+        <div className="chat-messages" id="chat-messages">
+          {messages.map((msg, index) => (
             <div
               key={index}
               className={`chat-message--${
-                message.sender !== userInfo.username ? "other" : "self"
+                msg.senderId === userInfo.userId ? "self" : "other"
               }`}
             >
-              {message.sender !== userInfo.username && (
-                <LazyLoadImage
-                  src={message.avatar}
-                  className="chat-message--other-pfp"
-                  alt="user-pfp"
-                />
-              )}
-              <span msg-type="text">{message.text}</span>
+              <span>{msg.message}</span>
             </div>
           ))}
         </div>
         <div className="chat-messenger">
-          <form className="chat-messenger-box" onSubmit={handleSendMessage}>
-            <div className="chat-messenger--left">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="30"
-                height="30"
-                fill="none"
-                viewBox="0 0 24 24"
-                onClick={openUserFilesSheet}
-              >
-                <path
-                  fill="currentColor"
-                  fillRule="evenodd"
-                  d="M9 7a5 5 0 0 1 10 0v8a7 7 0 1 1-14 0V9a1 1 0 0 1 2 0v6a5 5 0 0 0 10 0V7a3 3 0 1 0-6 0v8a1 1 0 1 0 2 0V9a1 1 0 1 1 2 0v6a3 3 0 1 1-6 0z"
-                  clipRule="evenodd"
-                ></path>
-              </svg>
-            </div>
-            <div className="chat-messenger--center">
-              <input
-                ref={inputMessageRef}
-                type="text"
-                placeholder="Message"
-                value={inputText}
-                onChange={(e) => setInputText(e.target.value)}
-              />
-            </div>
-            <button
-              className="chat-messenger--right"
-              type="submit"
-              disabled={!inputText}
-            >
-              <i className="fa fa-paper-plane"></i>
+          <form onSubmit={handleSendMessage}>
+            <input
+              ref={inputMessageRef}
+              type="text"
+              placeholder="Type a message"
+              value={inputText}
+              onChange={(e) => setInputText(e.target.value)}
+            />
+            <button type="submit" disabled={!inputText}>
+              Send
             </button>
           </form>
         </div>

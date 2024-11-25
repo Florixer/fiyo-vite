@@ -1,15 +1,14 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
 import CustomTopNavbar from "@/layout/items/CustomTopNavbar";
 import matchMedia from "matchmedia";
 import UserContext from "@/context/user/UserContext";
-import demoPersonPfp from "@/assets/media/img/demo-person.jpg";
 
 const InboxList = () => {
-  const { userInfo } = useContext(UserContext);
+  const { inboxItems, setInboxItems } = useContext(UserContext);
   const [isMobile, setIsMobile] = React.useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const mediaQuery = matchMedia("(max-width: 950px)");
     const handleMediaQueryChange = () => {
       setIsMobile(mediaQuery.matches);
@@ -23,55 +22,24 @@ const InboxList = () => {
     };
   }, []);
 
-  const inboxItems = {
-    inbox: {
-      items: [
-        {
-          id: 2963293620915324,
-          title: "json.fiyo",
-          cover: demoPersonPfp,
-          last_msg: "1 new message",
-        },
-        {
-          id: 2963293620915324,
-          title: "json.fiyo",
-          cover: demoPersonPfp,
-          last_msg: "1 new message",
-        },
-        {
-          id: 2963293620915324,
-          title: "json.fiyo",
-          cover: demoPersonPfp,
-          last_msg: "1 new message",
-        },
-        {
-          id: 2963293620915324,
-          title: "json.fiyo",
-          cover: demoPersonPfp,
-          last_msg: "1 new message",
-        },
-        {
-          id: 2963293620915324,
-          title: "json.fiyo",
-          cover: demoPersonPfp,
-          last_msg: "1 new message",
-        },
-      ],
-    },
-  };
-
   const renderInbox = () => {
-    return inboxItems.inbox.items.map((chat, index) => (
-      <Link to={`/direct/t/${chat.id}`} key={index}>
-        <div className="inbox-item" id={chat.id}>
+    return inboxItems.map((item) => (
+      <Link to={`/direct/t/${item.id}`} key={item.id}>
+        <div className="flex flex-row mb-3 py-1">
           <img
-            alt="chat-cover"
-            className="inbox-item--cover"
-            src={chat.cover}
+            alt="Profile Picture"
+            className="w-12 h-12 rounded-full mr-3 object-cover"
+            src={item.pfp}
           />
-          <div className="inbox-item-main">
-            <label className="inbox-item--title">{chat.title}</label>
-            <span className="inbox-item--last-msg">{chat.last_msg}</span>
+          <div className="flex flex-col w-full">
+            <label className="inbox-item--title">{item.name}</label>
+            <span
+              className={`text-sm mt-1 break-words text-gray-500 ${
+                !item.seen ? "font-bold text-white" : ""
+              }`}
+            >
+              {item.last_msg}
+            </span>
           </div>
         </div>
       </Link>
@@ -80,7 +48,7 @@ const InboxList = () => {
 
   return (
     <div
-      className="inbox-container"
+      className="max-w-80 w-full border-r border-gray-700"
       style={isMobile ? { maxWidth: "100%" } : { maxWidth: "20rem" }}
     >
       <CustomTopNavbar
@@ -88,10 +56,8 @@ const InboxList = () => {
         navbarTitle="demo_.person"
         navbarSecondIcon="fal fa-pen-to-square"
       />
-      <div className="inbox-list">
-        <b className="inbox-list--heading">Messages</b>
-        {renderInbox()}
-      </div>
+      <b className="px-3">Messages</b>
+      <div className="px-3 py-2">{renderInbox()}</div>
     </div>
   );
 };

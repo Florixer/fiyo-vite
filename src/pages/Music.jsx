@@ -38,7 +38,9 @@ const Music = () => {
 
   const { getTrack, getTrackData, deleteCachedAudioData, handleAudioPause } =
     useMusicUtility();
-  const saavnApiBaseUrl = "https://fiyosaavn.vercel.app/api";
+
+  const fiyosaavnApiBaseUri = process.env.VITE_FIYOSAAVN_API_BASE_URI;
+  
   const [searchText, setSearchText] = useState("");
   const [searchFieldActive, setSearchFieldActive] = useState(false);
   const [printError, setPrintError] = useState("");
@@ -72,7 +74,7 @@ const Music = () => {
       try {
         setApiLoading(true);
         const { data: response } = await axios.get(
-          `${saavnApiBaseUrl}/search/songs`,
+          `${fiyosaavnApiBaseUri}/search/songs`,
           {
             params: {
               query: searchTerm,
@@ -91,14 +93,14 @@ const Music = () => {
         setApiLoading(false);
       }
     },
-    [saavnApiBaseUrl],
+    [fiyosaavnApiBaseUri],
   );
 
   const searchSpeechTracks = async (searchTerm) => {
     try {
       setApiLoading(true);
       const { data: response } = await axios.get(
-        `${saavnApiBaseUrl}/search/songs`,
+        `${fiyosaavnApiBaseUri}/search/songs`,
         {
           params: {
             query: searchTerm,
@@ -122,7 +124,7 @@ const Music = () => {
     setApiLoading(true);
     try {
       const { data: response } = await axios.get(
-        `${saavnApiBaseUrl}/playlists?id=1134543272&limit=50`,
+        `${fiyosaavnApiBaseUri}/playlists?id=1134543272&limit=50`,
       );
       setTopTracks(response.data.songs);
       setTracks(response.data.songs);
@@ -132,7 +134,7 @@ const Music = () => {
       console.error("Error fetching top tracks:", error);
       setApiLoading(false);
     }
-  }, [saavnApiBaseUrl]);
+  }, [fiyosaavnApiBaseUri]);
 
   const downloadTrack = async (trackId) => {
     try {

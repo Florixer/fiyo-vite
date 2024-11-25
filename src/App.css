@@ -2155,63 +2155,6 @@ b {
   border-right: 0.01rem solid var(--fm-primary-border);
 }
 
-.inbox-container {
-  max-width: 20rem;
-  width: 100%;
-  overflow: hidden;
-  height: 100vh;
-  border-right: 0.01rem solid var(--fm-primary-border);
-}
-
-.inbox-list {
-  display: flex;
-  background-color: var(--fm-body-bg-color);
-  color: var(--fm-primary-text);
-  flex-direction: column;
-  height: 100%;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-
-.inbox-list--heading {
-  margin: 0 0 1rem 1rem;
-}
-
-.inbox-item {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  color: var(--fm-primary-text);
-  padding: 1rem 0 1rem 0;
-  align-items: center;
-  font-size: 0.95rem;
-  text-align: left;
-  width: 100%;
-  height: 5rem;
-  cursor: pointer;
-}
-
-.inbox-item:active {
-  background-color: var(--fm-secondary-bg-color);
-}
-
-.inbox-item--cover {
-  width: 3.3rem;
-  height: 3.3rem;
-  margin: 0 1rem;
-  border-radius: 50px;
-}
-
-.inbox-item-main {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
-  cursor: pointer;
-}
-
 .inbox-item--title {
   color: var(--fm-primary-text);
   width: 90%;
