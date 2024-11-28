@@ -58,6 +58,8 @@ const Inbox = () => {
           },
         },
       );
+      window.location.href = `/direct/${data.data.roomDetails.id}`;
+      setIsUsersListModalOpen(false);
     } catch (error) {
       throw new Error(`Error in createChatRoom: ${error}`);
     }
@@ -96,6 +98,10 @@ const Inbox = () => {
             onClose={() => setIsUsersListModalOpen(false)}
           >
             <Box sx={style}>
+              <Button
+                onClick={() => createChatRoom([...selectedUsersForNewRoom.map((user) => user.id)])}
+                variant="contained"
+                >Create</Button>
               <div className="flex">
                 {selectedUsersForNewRoom.map((user) => {
                   return (
@@ -124,35 +130,39 @@ const Inbox = () => {
                 })}
               </div>
               <hr />
-              {usersList.map((user) => (
-                <div
-                  key={user.id}
-                  className="flex items-center justify-between py-3 px-4 rounded-lg"
-                >
-                  <div className="flex items-center space-x-4">
-                    <Avatar src={user.avatar} alt="User Avatar" />
-                    <div>
-                      <p className="text-gray-50 font-medium">
-                        {user.full_name}
-                      </p>
-                      <p className="text-gray-500 text-sm">@{user.username}</p>
-                    </div>
-                  </div>
-                  <Button
-                    variant="contained"
-                    size="small"
-                    className="!bg-blue-500 !text-white hover:!bg-blue-600"
-                    onClick={() =>
-                      setSelectedUsersForNewRoom([
-                        ...selectedUsersForNewRoom,
-                        user,
-                      ])
-                    }
+              {usersList
+                .filter((user) => user.id !== JSON.parse(localStorage.getItem("userInfo")).id)
+                .map((user) => (
+                  <div
+                    key={user.id}
+                    className="flex items-center justify-between py-3 px-4 rounded-lg"
                   >
-                    Add
-                  </Button>
-                </div>
-              ))}
+                    <div className="flex items-center space-x-4">
+                      <Avatar src={user.avatar} alt="User Avatar" />
+                      <div>
+                        <p className="text-gray-50 font-medium">
+                          {user.full_name}
+                        </p>
+                        <p className="text-gray-500 text-sm">
+                          @{user.username}
+                        </p>
+                      </div>
+                    </div>
+                    <Button
+                      variant="contained"
+                      size="small"
+                      className="!bg-blue-500 !text-white hover:!bg-blue-600"
+                      onClick={() =>
+                        setSelectedUsersForNewRoom([
+                          ...selectedUsersForNewRoom,
+                          user,
+                        ])
+                      }
+                    >
+                      Add
+                    </Button>
+                  </div>
+                ))}
             </Box>
           </Modal>
           <div

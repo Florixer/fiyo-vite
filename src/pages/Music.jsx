@@ -39,7 +39,7 @@ const Music = () => {
   const { getTrack, getTrackData, deleteCachedAudioData, handleAudioPause } =
     useMusicUtility();
 
-  const fiyosaavnApiBaseUri = process.env.VITE_FIYOSAAVN_API_BASE_URI;
+  const fiyosaavnApiBaseUri = import.meta.env.VITE_FIYOSAAVN_API_BASE_URI;
   
   const [searchText, setSearchText] = useState("");
   const [searchFieldActive, setSearchFieldActive] = useState(false);
