@@ -1,170 +1,168 @@
 import React, { useRef, useState, useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
+import matchMedia from "matchmedia";
+import { LazyLoadImage } from "react-lazy-load-image-component";
 import CustomTopNavbar from "@/layout/items/CustomTopNavbar";
 import InboxList from "@/components/direct/InboxList";
 import UserFilesSheet from "@/components/direct/chat/UserFilesSheet";
 import UserContext from "@/context/user/UserContext";
-import { useSocket } from "@/context/socket/SocketContext";
+import SocketContext from "@/context/socket/SocketContext";
 
 const Chat = () => {
-  const { socket } = useSocket();
-  const { userInfo } = useContext(UserContext);
+  const { socket } = useContext(SocketContext);
+  const { userInfo, inboxItems } = useContext(UserContext);
   const [inputText, setInputText] = useState("");
+  const inputMessageRef = useRef(null);
   const [messages, setMessages] = useState([]);
   const [isUserFilesSheetOpen, setIsUserFilesSheetOpen] = useState(false);
-  const { currentRoomId } = useParams();
-  const inputMessageRef = useRef(null);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    if (!socket || !currentRoomId) return;
-
-    // Fetch messages for the room
-    socket.emit("get_messages", { roomId: currentRoomId });
-
-    const handleReceiveMessages = (messages) => {
-      setMessages(messages);
+    const mediaQuery = matchMedia("(max-width: 950px)");
+    const handleMediaQueryChange = () => {
+      setIsMobile(mediaQuery.matches);
     };
 
-    const handleNewMessage = ({ senderId, message, messageId }) => {
-      setMessages((prev) => [...prev, { senderId, message, messageId }]);
-    };
-
-    const handleEditMessage = ({ messageId, updatedMessage }) => {
-      setMessages((prev) =>
-        prev.map((msg) =>
-          msg.messageId === messageId ? { ...msg, message: updatedMessage } : msg
-        )
-      );
-    };
-
-    const handleDeleteMessage = ({ messageId }) => {
-      setMessages((prev) => prev.filter((msg) => msg.messageId !== messageId));
-    };
-
-    const handleReactToMessage = ({ messageId, reaction }) => {
-      setMessages((prev) =>
-        prev.map((msg) =>
-          msg.messageId === messageId
-            ? { ...msg, reactions: [...(msg.reactions || []), reaction] }
-            : msg
-        )
-      );
-    };
-
-    const handleUnreactToMessage = ({ messageId, reaction }) => {
-      setMessages((prev) =>
-        prev.map((msg) =>
-          msg.messageId === messageId
-            ? { ...msg, reactions: (msg.reactions || []).filter((r) => r !== reaction) }
-            : msg
-        )
-      );
-    };
-
-    socket.on("messages", handleReceiveMessages);
-    socket.on("message_received", handleNewMessage);
-    socket.on("message_edited", handleEditMessage);
-    socket.on("message_unsent", handleDeleteMessage);
-    socket.on("message_reacted", handleReactToMessage);
-    socket.on("message_unreacted", handleUnreactToMessage);
+    mediaQuery.addListener(handleMediaQueryChange);
+    handleMediaQueryChange();
 
     return () => {
-      socket.off("messages", handleReceiveMessages);
-      socket.off("message_received", handleNewMessage);
-      socket.off("message_edited", handleEditMessage);
-      socket.off("message_unsent", handleDeleteMessage);
-      socket.off("message_reacted", handleReactToMessage);
-      socket.off("message_unreacted", handleUnreactToMessage);
+      mediaQuery.removeListener(handleMediaQueryChange);
     };
-  }, [socket, currentRoomId]);
+  }, []);
+
+  const { currentRoomId } = useParams();
+  const { socketUser } = useSocket();
+
+  document.title = ` Chats • Flexiyo`;
 
   const handleSendMessage = (event) => {
     event.preventDefault();
-    if (!inputText.trim() || !currentRoomId) return;
-
-    const messageId = Date.now(); // Temporary ID before backend assigns one
-    socket.emit("send_message", {
-      roomId: currentRoomId,
-      senderId: userInfo.userId,
-      message: inputText,
-      messageId,
-    });
-
-    setMessages((prev) => [
-      ...prev,
-      { senderId: userInfo.userId, message: inputText, messageId },
-    ]);
-    setInputText("");
-    inputMessageRef.current.focus();
+    if (inputText.trim()) {
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { sender: userInfo.username, message: inputText },
+      ]);
+      socket.emit(
+        "send-message",
+        roomId,
+        userInfo.avatar,
+        userInfo.username,
+        inputText,
+      );
+      saveMessage({ sender: userInfo.username, message: inputText });
+      setInputText("");
+      inputMessageRef.current.focus();
+    }
   };
 
-  const handleEditMessage = (messageId, newMessage) => {
-    socket.emit("edit_message", {
-      roomId: currentRoomId,
-      senderId: userInfo.userId,
-      messageId,
-      updatedMessage: newMessage,
-    });
+  // Automatic Scrolling
+  useEffect(() => {
+    const scrollToBottom = () => {
+      setTimeout(() => {
+        const scrollableDiv = document.getElementById("chat-messages");
+        if (scrollableDiv) {
+          scrollableDiv.scrollTop = scrollableDiv.scrollHeight;
+        }
+      }, 0);
+    };
+    scrollToBottom();
+  }, [messages]);
+
+  const openUserFilesSheet = () => {
+    setIsUserFilesSheetOpen(true);
   };
 
-  const handleDeleteMessage = (messageId) => {
-    socket.emit("unsend_message", {
-      roomId: currentRoomId,
-      senderId: userInfo.userId,
-      messageId,
-    });
-  };
-
-  const handleReactToMessage = (messageId, reaction) => {
-    socket.emit("react_to_message", {
-      roomId: currentRoomId,
-      senderId: userInfo.userId,
-      messageId,
-      reaction,
-    });
-  };
-
-  const handleUnreactToMessage = (messageId, reaction) => {
-    socket.emit("unreact_to_message", {
-      roomId: currentRoomId,
-      senderId: userInfo.userId,
-      messageId,
-      reaction,
-    });
+  const closeUserFilesSheet = () => {
+    setIsUserFilesSheetOpen(false);
   };
 
   return (
     <section id="chat">
       <UserFilesSheet
+        openUserFilesSheet={openUserFilesSheet}
         isUserFilesSheetOpen={isUserFilesSheetOpen}
         setIsUserFilesSheetOpen={setIsUserFilesSheetOpen}
       />
-      <InboxList />
+      {!isMobile && <InboxList />}
       <div className="chat-area">
-        <CustomTopNavbar navbarTitle="Chat Room" setBorder={true} />
-        <div className="chat-messages" id="chat-messages">
-          {messages.map((msg, index) => (
+        <CustomTopNavbar
+          navbarPrevPage={isMobile ? "/direct/inbox" : null}
+          navbarCover={recepient.cover}
+          navbarTitle={recepient.name}
+          navbarFirstIcon="fa fa-phone"
+          navbarSecondIcon="fa fa-video"
+          setBorder={true}
+        />
+        <div
+          className="chat-messages"
+          id="chat-messages"
+          onClick={closeUserFilesSheet}
+        >
+          <div className="flex flex-col items-center gap-2 mt-5">
+            <LazyLoadImage
+              src={recepient.pfp}
+              alt="Profile Picture"
+              className="w-24 h-24 rounded-full object-cover"
+            />
+            <b className="text-sm">{recepient.name}</b>
+            <div className="text-xs">Flexiyo • @{recepient.username}</div>
+            <button className="fm-primary-btn-inverse rounded-lg p-2 my-2">
+              View Profile
+            </button>
+          </div>
+          {messages.map((message, index) => (
             <div
               key={index}
               className={`chat-message--${
-                msg.senderId === userInfo.userId ? "self" : "other"
+                message.sender !== userInfo.username ? "other" : "self"
               }`}
             >
-              <span>{msg.message}</span>
+              {message.sender !== userInfo.username && (
+                <LazyLoadImage
+                  src={recepient.pfp}
+                  className="w-10 h-10 rounded-full object-cover"
+                  alt="Profile Picture"
+                />
+              )}
+              <span msg-type="text">{message.message}</span>
             </div>
           ))}
         </div>
         <div className="chat-messenger">
-          <form onSubmit={handleSendMessage}>
-            <input
-              ref={inputMessageRef}
-              type="text"
-              placeholder="Type a message"
-              value={inputText}
-              onChange={(e) => setInputText(e.target.value)}
-            />
-            <button type="submit" disabled={!inputText}>
-              Send
+          <form className="chat-messenger-box" onSubmit={handleSendMessage}>
+            <div className="chat-messenger--left">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="30"
+                height="30"
+                fill="none"
+                viewBox="0 0 24 24"
+                onClick={openUserFilesSheet}
+              >
+                <path
+                  fill="currentColor"
+                  fillRule="evenodd"
+                  d="M9 7a5 5 0 0 1 10 0v8a7 7 0 1 1-14 0V9a1 1 0 0 1 2 0v6a5 5 0 0 0 10 0V7a3 3 0 1 0-6 0v8a1 1 0 1 0 2 0V9a1 1 0 1 1 2 0v6a3 3 0 1 1-6 0z"
+                  clipRule="evenodd"
+                ></path>
+              </svg>
+            </div>
+            <div className="chat-messenger--center">
+              <input
+                ref={inputMessageRef}
+                type="text"
+                placeholder="Message"
+                value={inputText}
+                onChange={(e) => setInputText(e.target.value)}
+              />
+            </div>
+            <button
+              className="chat-messenger--right"
+              type="submit"
+              disabled={!inputText}
+            >
+              <i className="fa fa-paper-plane"></i>
             </button>
           </form>
         </div>

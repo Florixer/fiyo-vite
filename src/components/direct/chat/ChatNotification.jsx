@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import UserContext from "@/context/user/UserContext";
-import { useSocket } from "@/context/socket/SocketContext";
+import SocketContext from "@/context/socket/SocketContext";
 
 const ChatNotification = () => {
   // const { userInfo } = useContext(UserContext);

@@ -5,10 +5,10 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { createSocket } from "@/hooks/user/useSocketService";
+import { createSocket } from "@/hooks/user/useSocketService.js";
 import UserContext from "@/context/user/UserContext";
 
-const SOCKET_URL = "http://localhost:8000";
+const SOCKET_URL = import.meta.env.VITE_FIYOCHAT_SRV_BASE_URI;
 
 const SocketContext = createContext(null);
 
@@ -37,8 +37,8 @@ export const SocketProvider = ({ children }) => {
       socketRef.current = createSocket(SOCKET_URL, {
         withCredentials: true,
         transports: ["websocket"],
-        query: {
-          user_id: "123456",
+        auth: {
+          fiyoat: userInfo.tokens.at,
         },
       });
 
@@ -53,7 +53,7 @@ export const SocketProvider = ({ children }) => {
 
         socketRef.current.on("roomsListResponse", (response) => {
           console.log(response);
-          // setInboxItems(response)
+          setInboxItems(response);
         });
 
         socketRef.current.on("disconnect", () => {
@@ -71,7 +71,6 @@ export const SocketProvider = ({ children }) => {
         socket: socketRef.current,
         socketUser,
         inboxItems,
-        setInboxItems,
       }}
     >
       {children}
@@ -79,6 +78,4 @@ export const SocketProvider = ({ children }) => {
   );
 };
 
-export const useSocket = () => {
-  return useContext(SocketContext);
-};
+export default SocketContext;

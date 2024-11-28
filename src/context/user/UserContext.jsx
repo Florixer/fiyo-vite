@@ -1,5 +1,4 @@
 import React, { createContext, useState, useEffect } from "react";
-import Cookies from "js-cookie";
 
 const UserContext = createContext(null);
 
@@ -9,10 +8,8 @@ export const UserProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const savedUserInfo = Cookies.get("userInfo");
-
-    console.log(savedUserInfo)
-
+    const savedUserInfo = localStorage.getItem("userInfo");
+    
     if (savedUserInfo) {
       setUserInfo(JSON.parse(savedUserInfo));
       setIsUserAuthenticated(true);

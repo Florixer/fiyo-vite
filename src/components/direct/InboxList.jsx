@@ -1,11 +1,11 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import CustomTopNavbar from "@/layout/items/CustomTopNavbar";
 import matchMedia from "matchmedia";
-import UserContext from "@/context/user/UserContext";
+import SocketContext from "@/context/socket/SocketContext";
 
 const InboxList = () => {
-  const { inboxItems, setInboxItems } = useContext(UserContext);
+  const { socket, inboxItems } = useContext(SocketContext);
   const [isMobile, setIsMobile] = React.useState(false);
 
   useEffect(() => {
@@ -46,6 +46,14 @@ const InboxList = () => {
     ));
   };
 
+  const renderDefaultInbox = () => {
+    return (
+      <div className="flex flex-row mb-3 py-1 justify-center items-center text-slate-500 h-96 w-full">
+        <h1>Create or join rooms to start chatting.</h1>
+      </div>
+    );
+  };
+
   return (
     <div
       className="max-w-80 w-full border-r border-gray-700"
@@ -57,7 +65,9 @@ const InboxList = () => {
         navbarSecondIcon="fal fa-pen-to-square"
       />
       <b className="px-3">Messages</b>
-      <div className="px-3 py-2">{renderInbox()}</div>
+      <div className="px-3 py-2">
+        {inboxItems ? renderInbox() : renderDefaultInbox()}
+      </div>
     </div>
   );
 };

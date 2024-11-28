@@ -23,7 +23,6 @@
     "file64": "^1.0.3",
     "firebase-tools": "^6.8.0",
     "formik": "^2.4.5",
-    "js-cookie": "^3.0.5",
     "matchmedia": "^0.1.2",
     "music-metadata-browser": "^2.5.11",
     "npm": "^10.8.3",

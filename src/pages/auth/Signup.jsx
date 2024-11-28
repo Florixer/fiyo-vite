@@ -152,7 +152,7 @@ const Signup = () => {
     setIsCreateUserAccountReqLoading(true);
     try {
       const response = await axios.post(
-        `${fiyoauthApiBaseUri}/users/create_account`,
+        `${fiyoauthApiBaseUri}/users/register`,
         {
           ...firstFormik.values,
           ...secondFormik.values,
@@ -162,7 +162,8 @@ const Signup = () => {
       setAlertText(response.data.message);
       setIsUserAuthenticated(true);
       setIsError(false);
-      setUserInfo(response.data.userInfo);
+      setUserInfo(response.data.data);
+      localStorage.setItem("userInfo", JSON.stringify(response?.data?.data));
     } catch (error) {
       setAlertText(error.response?.data?.message || "Internal Server Error");
       setIsError(true);

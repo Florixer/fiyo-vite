@@ -67,14 +67,15 @@ const Login = () => {
           password: values.password,
         },
         {
-          withCredentials: true,
+          withCredentials: false,
         }
       );
       setIsUserAuthenticated(true);
       setIsLoginUserAccountReqLoading(false);
-      setUserInfo(response.data.user);
+      setUserInfo(response?.data?.data);
+      localStorage.setItem("userInfo", JSON.stringify(response?.data?.data));
     } catch (error) {
-      setAlertText(error.response?.data?.message || "Internal Server Error");
+      setAlertText(error.response?.data?.message || "Something went wrong");
       setIsLoginUserAccountReqLoading(false);
       setIsUserAuthenticated(false);
     }
